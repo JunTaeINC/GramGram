@@ -66,16 +66,12 @@ public class LikeablePersonController {
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        LikeablePerson likeablePerson = likeablePersonService.getLikeablePerson(id);
-        InstaMember instaMember = rq.getMember().getInstaMember();
+        RsData<LikeablePerson> deleteRsData = likeablePersonService.deleteLikeablePerson(id, rq.getMember().getInstaMember());
 
-        if (instaMember.getId() != likeablePerson.getFromInstaMember().getId()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "호감상대를 삭제할 권한이 없습니다.");
+        if (deleteRsData.isFail()) {
+            return rq.historyBack(deleteRsData);
         }
 
-        likeablePersonService.deleteLikeablePerson(likeablePerson);
-
-        return rq.redirectWithMsg("/likeablePerson/list",
-                "호감상대(%s)가 삭제되었습니다.".formatted(likeablePerson.getToInstaMemberUsername()));
+        return rq.redirectWithMsg("/likeablePerson/list", deleteRsData);
     }
 }
