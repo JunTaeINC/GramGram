@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,5 +52,13 @@ public class LikeablePersonService {
 
     public void deleteLikeablePerson(LikeablePerson likeablePerson) {
         likeablePersonRepository.delete(likeablePerson);
+    }
+
+    public LikeablePerson getLikeablePerson(Integer id) {
+        Optional<LikeablePerson> likeablePerson = likeablePersonRepository.findById(id);
+
+        if (!likeablePerson.isPresent()) throw new RuntimeException("LikeablePerson not found");
+
+        return likeablePerson.get();
     }
 }
