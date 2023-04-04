@@ -152,10 +152,11 @@ public class LikeablePersonControllerTests {
 
     @Test
     @DisplayName("호감상대 삭제")
+    @WithUserDetails("user3")
     void t006() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/likeablePerson/delete/**"))
+                .perform(get("/likeablePerson/delete/2"))
                 .andDo(print());
 
         // THEN
