@@ -9,12 +9,16 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -58,5 +62,20 @@ public class LikeablePersonController {
         }
 
         return "usr/likeablePerson/list";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Integer id) {
+        LikeablePerson likeablePerson = likeablePersonService.getLikeablePerson(id);
+        InstaMember instaMember = rq.getMember().getInstaMember();
+
+        if (instaMember.getId() != likeablePerson.getFromInstaMember().getId()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "호감상대를 삭제할 권한이 없습니다.");
+        }
+
+        likeablePersonService.deleteLikeablePerson(likeablePerson);
+
+        return rq.redirectWithMsg("/likeablePerson/list",
+                "호감상대(%s)가 삭제되었습니다.".formatted(likeablePerson.getToInstaMemberUsername()));
     }
 }
