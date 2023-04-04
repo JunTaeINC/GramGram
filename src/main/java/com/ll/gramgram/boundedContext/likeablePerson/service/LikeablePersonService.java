@@ -50,6 +50,7 @@ public class LikeablePersonService {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
     }
 
+    @Transactional
     public void deleteLikeablePerson(LikeablePerson likeablePerson) {
         likeablePersonRepository.delete(likeablePerson);
     }
