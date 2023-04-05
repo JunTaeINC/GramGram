@@ -15,10 +15,10 @@ spring:
         registration:
           google:
             scope:
+              - profile
             client-name: Google
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8080/login/oauth2/code/google
-            client-authentication-method: POST
           kakao:
             scope:
             client-name: Kakao
