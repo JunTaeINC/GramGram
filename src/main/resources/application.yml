@@ -3,6 +3,7 @@ spring:
     active: dev
     include:
       - kakao
+      - google
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://127.0.0.1:3306/gram__dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
@@ -14,8 +15,6 @@ spring:
         registration:
           google:
             scope:
-            client-id: 198497754601-lnc6pr1p5gl6je52q72puto165q47ga1.apps.googleusercontent.com
-            client-secret: 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
             client-name: Google
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8080/login/oauth2/code/google
