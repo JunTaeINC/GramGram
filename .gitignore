@@ -38,4 +38,5 @@ out/
 
 
 ### API Key ###
-src/main/resources/application-kakao.yml
+application-kakao.yml
+application-google.yml

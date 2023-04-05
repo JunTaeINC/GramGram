@@ -12,6 +12,14 @@ spring:
     oauth2:
       client:
         registration:
+          google:
+            scope:
+            client-id: 198497754601-lnc6pr1p5gl6je52q72puto165q47ga1.apps.googleusercontent.com
+            client-secret: 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
+            client-name: Google
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            client-authentication-method: POST
           kakao:
             scope:
             client-name: Kakao
