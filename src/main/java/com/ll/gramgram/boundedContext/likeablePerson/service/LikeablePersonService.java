@@ -1,6 +1,5 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
-import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
@@ -8,12 +7,11 @@ import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -56,14 +54,15 @@ public class LikeablePersonService {
     @Transactional
     public RsData<LikeablePerson> deleteLikeablePerson(Integer id, InstaMember instaMember) {
         LikeablePerson likeablePerson = getLikeablePerson(id);
-
-        if (instaMember.getId() != likeablePerson.getFromInstaMember().getId()) {
+        // 객체 비교시 != -> !Objects.equals (A, B)
+        if (!Objects.equals(instaMember.getId(), likeablePerson.getFromInstaMember().getId())) {
             return RsData.of("F-1", "호감상대를 삭제할 권한이 없습니다.");
         }
 
         likeablePersonRepository.delete(likeablePerson);
 
-        return RsData.of("S-1", "호감상대(%s)가 삭제되었습니다.".formatted(likeablePerson.getToInstaMemberUsername()), likeablePerson);
+        return RsData.of("S-1", "호감상대(%s)가 삭제되었습니다."
+                .formatted(likeablePerson.getToInstaMember().getUsername()), likeablePerson);
     }
 
     public LikeablePerson getLikeablePerson(Integer id) {
