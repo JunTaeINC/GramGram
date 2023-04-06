@@ -21,7 +21,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class LikeablePerson {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    private Integer id;
     @CreatedDate
     private LocalDateTime createDate;
     @LastModifiedDate
