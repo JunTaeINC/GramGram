@@ -68,8 +68,12 @@ public class LikeablePersonService {
     public LikeablePerson getLikeablePerson(Integer id) {
         Optional<LikeablePerson> likeablePerson = likeablePersonRepository.findById(id);
 
-        if (!likeablePerson.isPresent()) throw new RuntimeException("LikeablePerson not found");
+        if (likeablePerson.isEmpty()) throw new RuntimeException("LikeablePerson not found");
 
         return likeablePerson.get();
+    }
+
+    public Optional<LikeablePerson> findById(Integer id) {
+        return likeablePersonRepository.findById(id);
     }
 }
