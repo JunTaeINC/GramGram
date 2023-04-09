@@ -52,7 +52,7 @@ public class LikeablePersonService {
     }
 
     @Transactional
-    public RsData<LikeablePerson> deleteLikeablePerson(Integer id, InstaMember instaMember) {
+    public RsData<LikeablePerson> deleteLikeablePerson(Long id, InstaMember instaMember) {
         LikeablePerson likeablePerson = getLikeablePerson(id);
         // 객체 비교시 != -> !Objects.equals (A, B)
         if (!Objects.equals(instaMember.getId(), likeablePerson.getFromInstaMember().getId())) {
@@ -65,7 +65,7 @@ public class LikeablePersonService {
                 .formatted(likeablePerson.getToInstaMember().getUsername()), likeablePerson);
     }
 
-    public LikeablePerson getLikeablePerson(Integer id) {
+    public LikeablePerson getLikeablePerson(Long id) {
         Optional<LikeablePerson> likeablePerson = likeablePersonRepository.findById(id);
 
         if (likeablePerson.isEmpty()) throw new RuntimeException("LikeablePerson not found");
@@ -73,7 +73,7 @@ public class LikeablePersonService {
         return likeablePerson.get();
     }
 
-    public Optional<LikeablePerson> findById(Integer id) {
+    public Optional<LikeablePerson> findById(Long id) {
         return likeablePersonRepository.findById(id);
     }
 }
