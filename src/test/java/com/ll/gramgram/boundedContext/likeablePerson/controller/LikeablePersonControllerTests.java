@@ -172,6 +172,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/likeablePerson/list**"));
 
-        assertThat(likeablePersonService.findById(2).isPresent()).isFalse();
+        assertThat(likeablePersonService.findById(2L).isPresent()).isFalse();
     }
 }
