@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### API Key ###
+application-kakao.yml
+application-google.yml

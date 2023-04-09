@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class LikeablePersonService {
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
-        if ( member.hasConnectedInstaMember() == false ) {
+        if (member.hasConnectedInstaMember() == false) {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
 
@@ -30,10 +32,11 @@ public class LikeablePersonService {
         }
 
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
+        InstaMember fromInstaMember = member.getInstaMember();
 
         LikeablePerson likeablePerson = LikeablePerson
                 .builder()
-                .fromInstaMember(member.getInstaMember()) // 호감을 표시하는 사람의 인스타 멤버
+                .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
                 .fromInstaMemberUsername(member.getInstaMember().getUsername()) // 중요하지 않음
                 .toInstaMember(toInstaMember) // 호감을 받는 사람의 인스타 멤버
                 .toInstaMemberUsername(toInstaMember.getUsername()) // 중요하지 않음
@@ -41,11 +44,39 @@ public class LikeablePersonService {
                 .build();
 
         likeablePersonRepository.save(likeablePerson); // 저장
+        fromInstaMember.addFromLikeablePerson(likeablePerson);
+        toInstaMember.addToLikeablePerson(likeablePerson);
 
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
     }
 
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
+    }
+
+    @Transactional
+    public RsData<LikeablePerson> delete(Long id, InstaMember instaMember) {
+        LikeablePerson likeablePerson = getLikeablePerson(id);
+        // 객체 비교시 != -> !Objects.equals (A, B)
+        if (!Objects.equals(instaMember.getId(), likeablePerson.getFromInstaMember().getId())) {
+            return RsData.of("F-1", "호감상대를 삭제할 권한이 없습니다.");
+        }
+
+        likeablePersonRepository.delete(likeablePerson);
+
+        return RsData.of("S-1", "호감상대(%s)가 삭제되었습니다."
+                .formatted(likeablePerson.getToInstaMember().getUsername()), likeablePerson);
+    }
+
+    public LikeablePerson getLikeablePerson(Long id) {
+        Optional<LikeablePerson> likeablePerson = likeablePersonRepository.findById(id);
+
+        if (likeablePerson.isEmpty()) throw new RuntimeException("LikeablePerson not found");
+
+        return likeablePerson.get();
+    }
+
+    public Optional<LikeablePerson> findById(Long id) {
+        return likeablePersonRepository.findById(id);
     }
 }
