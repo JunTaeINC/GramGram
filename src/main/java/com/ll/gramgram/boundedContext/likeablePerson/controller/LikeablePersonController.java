@@ -44,6 +44,11 @@ public class LikeablePersonController {
     public String add(@Valid AddForm addForm) {
         RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
 
+        // 3명 등록후 'insta3'이 등록되었습니다. 에러메시지 출력 노란색
+//        if(rq.getMember().getInstaMember().getFromLikeablePeople().size() > 3) {
+//            return rq.historyBack("호감상대는 최대 10명까지 등록 가능합니다.");
+//        }
+
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData);
         }
