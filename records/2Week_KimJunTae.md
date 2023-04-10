@@ -6,7 +6,7 @@
 ### 🔥 필수 미션
 > 호감표시 할 때 예외처리 케이스 3가지 처리
 > - 테스트 코드를 활용해서 TDD 방식으로 풀이
-- [ ] Case 1 : 중복으로 호감표시시 예외처리
+- [X] Case 1 : 중복으로 호감표시시 예외처리
   - InstaId ABCD -> abcd (외모)
   - InstaId ABCD -> abcd (외모) ❗예외 발생❗`rq.historyBack`를 활용
 - [ ] Case 2 : 11명 이상의 호감상대를 등록시 예외처리
@@ -53,6 +53,11 @@
 > - 만약 입력한 호감상대가 있을시 `set` or `build`로 정보 변경
 
 ### **[❗️특이사항❗️]**
+
+- `rq.historyBack()`은 테스트코드에서 `redirectedUrlPattern`을 지원하지 않는다. 또한 원래 HTTP CODE 200을 반환하지만, 
+ `resp.setStatus(HttpServletResponse.SC_BAD_REQUEST)`에서 따로 설정을 해주었기 떄문에 HTTP CODE 400을 반환.
+  - `rq.redirectWithMsg()`는 HTTP CODE 300을 반환.
+- JPA 메서드 명명규칙에의해 `Repository`에서의 메서드명 중요.
 
 
 ### **[🤔회고]**
