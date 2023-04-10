@@ -34,6 +34,19 @@ public class NotProd {
 
             likeablePersonService.like(memberUser3, "insta_user4", 1);
             likeablePersonService.like(memberUser3, "insta_user100", 2);
+
+            // Only Test.
+            // LikeablePersonControllerTests / t008
+            likeablePersonService.like(memberUser2, "insta_test0", 2);
+            likeablePersonService.like(memberUser2, "insta_test1", 2);
+            likeablePersonService.like(memberUser2, "insta_test2", 2);
+            likeablePersonService.like(memberUser2, "insta_test3", 2);
+            likeablePersonService.like(memberUser2, "insta_test4", 2);
+            likeablePersonService.like(memberUser2, "insta_test5", 2);
+            likeablePersonService.like(memberUser2, "insta_test6", 2);
+            likeablePersonService.like(memberUser2, "insta_test7", 2);
+            likeablePersonService.like(memberUser2, "insta_test8", 2);
+            likeablePersonService.like(memberUser2, "insta_test9", 2);
         };
     }
 }
