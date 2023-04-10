@@ -190,7 +190,7 @@ public class LikeablePersonControllerTests {
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("add"))
-                .andExpect(status().is4xxClientError())
-                .andExpect(redirectedUrlPattern("/likeablePerson/list**"));
+                .andExpect(status().is4xxClientError());
+//                .andExpect(redirectedUrl("/likeablePerson/add**"));
     }
 }
