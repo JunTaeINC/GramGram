@@ -55,7 +55,7 @@ public class LikeablePersonService {
     }
 
     @Transactional
-    public RsData<LikeablePerson> delete(Long id, InstaMember instaMember) {
+    public RsData delete(Long id, InstaMember instaMember) {
         LikeablePerson likeablePerson = getLikeablePerson(id);
         // 객체 비교시 != -> !Objects.equals (A, B)
         if (!Objects.equals(instaMember.getId(), likeablePerson.getFromInstaMember().getId())) {
@@ -65,7 +65,7 @@ public class LikeablePersonService {
         likeablePersonRepository.delete(likeablePerson);
 
         return RsData.of("S-1", "호감상대(%s)가 삭제되었습니다."
-                .formatted(likeablePerson.getToInstaMember().getUsername()), likeablePerson);
+                .formatted(likeablePerson.getToInstaMember().getUsername()));
     }
 
     public LikeablePerson getLikeablePerson(Long id) {
