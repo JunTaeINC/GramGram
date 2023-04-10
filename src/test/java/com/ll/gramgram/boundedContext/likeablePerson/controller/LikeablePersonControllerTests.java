@@ -193,4 +193,33 @@ public class LikeablePersonControllerTests {
                 .andExpect(status().is4xxClientError());
 //                .andExpect(redirectedUrl("/likeablePerson/add**"));
     }
+
+    @Test
+    @DisplayName("호감상대 10명을 초과할시 예외 발생")
+    @WithUserDetails("user2")
+    void t008() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/likeablePerson/add")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("username", "test0").param("attractiveTypeCode", "1")
+                        .param("username", "test1").param("attractiveTypeCode", "1")
+                        .param("username", "test2").param("attractiveTypeCode", "2")
+                        .param("username", "test3").param("attractiveTypeCode", "3")
+                        .param("username", "test4").param("attractiveTypeCode", "1")
+                        .param("username", "test5").param("attractiveTypeCode", "2")
+                        .param("username", "test6").param("attractiveTypeCode", "3")
+                        .param("username", "test7").param("attractiveTypeCode", "1")
+                        .param("username", "test8").param("attractiveTypeCode", "2")
+                        .param("username", "test9").param("attractiveTypeCode", "3")
+                        .param("username", "test10").param("attractiveTypeCode", "2") // 11번째 예외발생
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("add"))
+                .andExpect(status().is4xxClientError());
+    }
 }
