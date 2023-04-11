@@ -40,7 +40,7 @@ public class LikeablePersonService {
 
         Optional<LikeablePerson> opToInstaMember = likeablePersonRepository.findByToInstaMember(toInstaMember);
 
-        if (opToInstaMember.isPresent()) {
+        if (opToInstaMember.isPresent() && opToInstaMember.get().getAttractiveTypeCode() == attractiveTypeCode) {
             return RsData.of("F-3", "이미 '%s'님은 호감상대로 등록되어있습니다.".formatted(username));
         }
 
