@@ -11,7 +11,7 @@
   - InstaId ABCD -> abcd (외모) ❗예외 발생❗`rq.historyBack`를 활용
 - [X] Case 2 : 11명 이상의 호감상대를 등록시 예외처리
   - `rq.historyBack`를 활용
-- [ ] Case 3 : 호감표시 사유 수정 기능 구현
+- [X] Case 3 : 호감표시 사유 수정 기능 구현
   - InstaId ABCD -> abcd (외모)
     - abcd (외모)
   - InstaId ABCD -> abcd (성격)
@@ -65,6 +65,11 @@
 - `LikeablePersonController`에서 구현시 10명째 등록할때 에러메세지 오류코드 F로 `호감상대가 등록되었습니다.` 출력되서 `Service`에서 구현
 
 > 💡 Case 3
+
+- `@Builder`가 `LikeablePerson`엔티티에 적용되었지만, `@Setter`를 추가해서 매력포인트를 다시 설정 하는 기능을 구현했다.
+`@Setter`를 구현 하지말고 `@Builder`를 구현 하는 것보다 코드가 간결하기 때문에 활용했는데 잘한건지 잘 모르겠다.
+- Case 1 에서 만들었던 코드를 합칠 수 있을것 같다. 커밋을 하고 난후 리펙토링 과정에서 코드를 합칠 예정이다.
+
 ### **[🤔회고]**
 
 ### **[💫리펙토링]**

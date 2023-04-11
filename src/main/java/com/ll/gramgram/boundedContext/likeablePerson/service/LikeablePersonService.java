@@ -44,6 +44,14 @@ public class LikeablePersonService {
             return RsData.of("F-3", "이미 '%s'님은 호감상대로 등록되어있습니다.".formatted(username));
         }
 
+        if (opToInstaMember.isPresent()) {
+            String toAttractiveTypeName = opToInstaMember.get().getAttractiveTypeDisplayName();
+            opToInstaMember.get().setAttractiveTypeCode(attractiveTypeCode);
+            String modifyAttractiveTypeName = opToInstaMember.get().getAttractiveTypeDisplayName();
+            return RsData.of("S-2", "%s 님의 호감사유를 '%s'에서 '%s'(으)로 변경되었습니다."
+                    .formatted(username, toAttractiveTypeName, modifyAttractiveTypeName));
+        }
+
         LikeablePerson likeablePerson = LikeablePerson
                 .builder()
                 .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
