@@ -40,14 +40,15 @@ public class LikeablePersonService {
 
         Optional<LikeablePerson> opToInstaMember = likeablePersonRepository.findByToInstaMember(toInstaMember);
 
-        if (opToInstaMember.isPresent() && opToInstaMember.get().getAttractiveTypeCode() == attractiveTypeCode) {
-            return RsData.of("F-3", "이미 '%s'님은 호감상대로 등록되어있습니다.".formatted(username));
-        }
-
         if (opToInstaMember.isPresent()) {
+            if (opToInstaMember.get().getAttractiveTypeCode() == attractiveTypeCode) {
+                return RsData.of("F-3", "이미 '%s'님은 호감상대로 등록되어있습니다.".formatted(username));
+            }
+
             String toAttractiveTypeName = opToInstaMember.get().getAttractiveTypeDisplayName();
             opToInstaMember.get().setAttractiveTypeCode(attractiveTypeCode);
             String modifyAttractiveTypeName = opToInstaMember.get().getAttractiveTypeDisplayName();
+
             return RsData.of("S-2", "%s 님의 호감사유를 '%s'에서 '%s'(으)로 변경되었습니다."
                     .formatted(username, toAttractiveTypeName, modifyAttractiveTypeName));
         }
