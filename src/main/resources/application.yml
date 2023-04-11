@@ -4,6 +4,7 @@ spring:
     include:
       - kakao
       - google
+      - naver
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://127.0.0.1:3306/gram__dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
@@ -14,9 +15,11 @@ spring:
       client:
         registration:
           kakao:
+          naver:
           google:
         provider:
           kakao:
+          naver:
 
   jpa:
     hibernate:

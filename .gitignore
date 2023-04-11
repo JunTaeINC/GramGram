@@ -40,3 +40,4 @@ out/
 ### API Key ###
 application-kakao.yml
 application-google.yml
+application-naver.yml
