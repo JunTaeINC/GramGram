@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface LikeablePersonRepository extends JpaRepository<LikeablePerson, Long> {
     List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId);
 
-    Optional<LikeablePerson> findByToInstaMember(InstaMember username);
+    Optional<LikeablePerson> findByFromInstaMemberAndToInstaMember_username(InstaMember instaMember, String username);
 
     List<LikeablePerson> findByToInstaMember_username(String username);
 
