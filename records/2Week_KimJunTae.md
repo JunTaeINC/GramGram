@@ -77,5 +77,19 @@
 발견하게 되었지만 이것 또한 활용하였다. `providerTypeCode`를 통해 어디 소셜로그인 인지 파악고 각자의 `oauthId`를 적용시켜줬다.
 
 ### **[🤔회고]**
+- Case 1, Case 3 검증이 잘되는 줄 알았지만, 전체 `LikeablePerson`에서의 검증 때문에 이 부분에서 에러가 났다.
+> - user1 -> likeLion(외모) ⭕️
+> - user2 -> likeLion(능력) ❌ 에러 발생
+- 그래서 코드를 수정했다. JPA 메서드를 활용하였는데
+```java
+# LikeablePersonRepository
+Optional<LikeablePerson> findByFromInstaMemberAndToInstaMember_username(InstaMember instaMember,String username);
 
+# LikeablePersonService
+Optional<LikeablePerson> optionalLikeablePerson =
+                likeablePersonRepository.findByFromInstaMemberAndToInstaMember_username(fromInstaMember, username);
+```
+- `findByFromInstaMember` -> `LikeablePerson` 중에서 `FromInstaMember`가 매개변수`fromInstaMember(InstaMember)` 이고(`And`),
+- `ToInstaMember_username` -> `LikeablePerson` 중에서 `ToInstaMember`의 `UserName`이 매개변수`username` 인 객체로 활용했다.
+- `And`의 갯수 + 1 = `매개변수`의 갯수 이다.
 ### **[💫리펙토링]**
