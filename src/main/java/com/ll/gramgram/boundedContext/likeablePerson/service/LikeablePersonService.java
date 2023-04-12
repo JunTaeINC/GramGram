@@ -31,7 +31,7 @@ public class LikeablePersonService {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
         }
 
-        if (member.getInstaMember().getFromLikeablePeople().size() > 9) {
+        if (member.getInstaMember().getFromLikeablePeople().size() >= LikeablePerson.getLikeablePersonFromMaxPeople()) {
             return RsData.of("F-4", "호감상대는 최대 10명까지 등록이 가능합니다.");
         }
 
