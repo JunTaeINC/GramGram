@@ -51,25 +51,31 @@ public class LikeablePersonService {
 
     @Transactional
     public RsData delete(Long id, InstaMember instaMember) {
-        LikeablePerson likeablePerson = getLikeablePerson(id);
+        RsData deleteRsData = canDelete(id, instaMember);
+
+        if (deleteRsData.isFail()) return deleteRsData;
+
+        LikeablePerson likeablePerson = (LikeablePerson) deleteRsData.getData();
+
+        likeablePersonRepository.delete(likeablePerson);
+
+        return RsData.of("S-1", "호감상대(%s)님이 삭제되었습니다."
+                .formatted(likeablePerson.getToInstaMember().getUsername()));
+    }
+
+    public RsData canDelete(Long id, InstaMember instaMember) {
+        Optional<LikeablePerson> optionalLikeablePerson = likeablePersonRepository.findById(id);
+        if (optionalLikeablePerson.isEmpty()) return RsData.of("F-2", "호감상대가 존재하지 않습니다.");
+
+        LikeablePerson likeablePerson = optionalLikeablePerson.get();
+
         // 객체 비교시 != -> !Objects.equals (A, B)
         if (!Objects.equals(instaMember.getId(), likeablePerson.getFromInstaMember().getId())) {
             return RsData.of("F-1", "호감상대를 삭제할 권한이 없습니다.");
         }
-
-        likeablePersonRepository.delete(likeablePerson);
-
-        return RsData.of("S-1", "호감상대(%s)가 삭제되었습니다."
-                .formatted(likeablePerson.getToInstaMember().getUsername()));
+        return RsData.of("S-9", "호감상대 삭제 가능합니다.", likeablePerson);
     }
 
-    public LikeablePerson getLikeablePerson(Long id) {
-        Optional<LikeablePerson> likeablePerson = likeablePersonRepository.findById(id);
-
-        if (likeablePerson.isEmpty()) throw new RuntimeException("LikeablePerson not found");
-
-        return likeablePerson.get();
-    }
 
     public Optional<LikeablePerson> findById(Long id) {
         return likeablePersonRepository.findById(id);
@@ -106,6 +112,7 @@ public class LikeablePersonService {
 
     }
 
+    @Transactional
     public RsData modifyAttractiveTypeCode(Member actor, String username, int attractiveTypeCode) {
         LikeablePerson likeablePerson =
                 likeablePersonRepository.findByFromInstaMemberAndToInstaMember_username(actor.getInstaMember(), username);
