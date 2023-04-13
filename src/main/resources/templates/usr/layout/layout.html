@@ -66,6 +66,7 @@
         <div class="navbar-center">
             <a href="/" class="btn btn-ghost normal-case text-xl">gramgram</a>
         </div>
+        <span class="navbar-end" th:if="${@rq.login}" th:text="|${@rq.member.username}님 환영합니다.|"></span>
         <div class="navbar-end">
             <button class="btn btn-ghost btn-circle">
                 <div class="indicator">
