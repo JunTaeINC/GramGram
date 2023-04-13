@@ -23,6 +23,10 @@ public class LikeablePersonService {
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
+
+        InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
+        InstaMember fromInstaMember = member.getInstaMember();
+
         if (!member.hasConnectedInstaMember()) {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
@@ -31,12 +35,10 @@ public class LikeablePersonService {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
         }
 
-        if (member.getInstaMember().getFromLikeablePeople().size() >= LikeablePerson.getLikeablePersonFromMaxPeople()) {
-            return RsData.of("F-4", "호감상대는 최대 10명까지 등록이 가능합니다.");
+        long likePersonFromMax = LikeablePerson.getLikeablePersonFromMaxPeople();
+        if (fromInstaMember.getFromLikeablePeople().size() >= likePersonFromMax) {
+            return RsData.of("F-4", "호감상대는 최대 %d명까지 등록이 가능합니다.".formatted(likePersonFromMax));
         }
-
-        InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
-        InstaMember fromInstaMember = member.getInstaMember();
 
         Optional<LikeablePerson> optionalLikeablePerson =
                 likeablePersonRepository.findByFromInstaMemberAndToInstaMember_username(fromInstaMember, username);
@@ -45,7 +47,6 @@ public class LikeablePersonService {
             if (optionalLikeablePerson.get().getAttractiveTypeCode() == attractiveTypeCode) {
                 return RsData.of("F-3", "이미 '%s'님은 호감상대로 등록되어있습니다.".formatted(username));
             }
-
             String toAttractiveTypeName = optionalLikeablePerson.get().getAttractiveTypeDisplayName();
             optionalLikeablePerson.get().setAttractiveTypeCode(attractiveTypeCode);
             String modifyAttractiveTypeName = optionalLikeablePerson.get().getAttractiveTypeDisplayName();
