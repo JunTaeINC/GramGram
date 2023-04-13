@@ -93,3 +93,10 @@ Optional<LikeablePerson> optionalLikeablePerson =
 - `ToInstaMember_username` -> `LikeablePerson` 중에서 `ToInstaMember`의 `UserName`이 매개변수`username` 인 객체로 활용했다.
 - `And`의 갯수 + 1 = `매개변수`의 갯수 이다.
 ### **[💫리펙토링]**
+- `LikeablePersonService.delete()`에서 검증하는 로직도 같이 들어있었다. 하지만 강사님의 코드를 보니 따로 `canDelete()`를 구현하여 검증메소드를 따로 만들어
+주었다. 메소드는 한가지 일만 만들어야 한다. 그래서 나도 그렇게 분리를 해주었다.
+- `LikeablePersonService.like()` 메소드에 검증과 수정,저장 기능을 같이 넣어서 구현을 했었는데 이 메소드 또한 분리를 해주었다.
+  - 검증 : `canLike()`
+  - 수정 : `modifyAttractiveTypeCode()`
+  - 저장 : `like()`
+- `Member`클래스의 매개변수 이름을 `member`로 작성하였는데 강사님이 피하라고 하셨다. 그래서 활동자 즉 `actor`로 매개변수 이름을 변경하였다.
