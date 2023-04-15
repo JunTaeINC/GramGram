@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -22,22 +21,22 @@ public class LikeablePersonService {
     private final InstaMemberService instaMemberService;
 
     @Transactional
-    public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
-        if (member.hasConnectedInstaMember() == false) {
-            return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
-        }
+    public RsData<LikeablePerson> like(Member actor, String username, int attractiveTypeCode) {
+        RsData canLikeRsData = canLike(actor, username, attractiveTypeCode);
 
-        if (member.getInstaMember().getUsername().equals(username)) {
-            return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
+        if (canLikeRsData.isFail()) return canLikeRsData;
+
+        if (canLikeRsData.getResultCode().equals("S-9")) {
+            return modifyAttractiveTypeCode(actor, username, attractiveTypeCode);
         }
 
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
-        InstaMember fromInstaMember = member.getInstaMember();
+        InstaMember fromInstaMember = actor.getInstaMember();
 
         LikeablePerson likeablePerson = LikeablePerson
                 .builder()
                 .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
-                .fromInstaMemberUsername(member.getInstaMember().getUsername()) // 중요하지 않음
+                .fromInstaMemberUsername(actor.getInstaMember().getUsername()) // 중요하지 않음
                 .toInstaMember(toInstaMember) // 호감을 받는 사람의 인스타 멤버
                 .toInstaMemberUsername(toInstaMember.getUsername()) // 중요하지 않음
                 .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
@@ -50,33 +49,82 @@ public class LikeablePersonService {
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
     }
 
-    public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
-        return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
+    @Transactional
+    public RsData delete(Long id, InstaMember instaMember) {
+        RsData deleteRsData = canDelete(id, instaMember);
+
+        if (deleteRsData.isFail()) return deleteRsData;
+
+        LikeablePerson likeablePerson = (LikeablePerson) deleteRsData.getData();
+
+        likeablePersonRepository.delete(likeablePerson);
+
+        return RsData.of("S-1", "호감상대(%s)님이 삭제되었습니다."
+                .formatted(likeablePerson.getToInstaMember().getUsername()));
     }
 
-    @Transactional
-    public RsData<LikeablePerson> delete(Long id, InstaMember instaMember) {
-        LikeablePerson likeablePerson = getLikeablePerson(id);
+    public RsData canDelete(Long id, InstaMember instaMember) {
+        Optional<LikeablePerson> optionalLikeablePerson = likeablePersonRepository.findById(id);
+        if (optionalLikeablePerson.isEmpty()) return RsData.of("F-2", "호감상대가 존재하지 않습니다.");
+
+        LikeablePerson likeablePerson = optionalLikeablePerson.get();
+
         // 객체 비교시 != -> !Objects.equals (A, B)
         if (!Objects.equals(instaMember.getId(), likeablePerson.getFromInstaMember().getId())) {
             return RsData.of("F-1", "호감상대를 삭제할 권한이 없습니다.");
         }
-
-        likeablePersonRepository.delete(likeablePerson);
-
-        return RsData.of("S-1", "호감상대(%s)가 삭제되었습니다."
-                .formatted(likeablePerson.getToInstaMember().getUsername()), likeablePerson);
+        return RsData.of("S-9", "호감상대 삭제 가능합니다.", likeablePerson);
     }
 
-    public LikeablePerson getLikeablePerson(Long id) {
-        Optional<LikeablePerson> likeablePerson = likeablePersonRepository.findById(id);
-
-        if (likeablePerson.isEmpty()) throw new RuntimeException("LikeablePerson not found");
-
-        return likeablePerson.get();
-    }
 
     public Optional<LikeablePerson> findById(Long id) {
         return likeablePersonRepository.findById(id);
     }
+
+    public RsData canLike(Member actor, String username, int attractiveTypeCode) {
+        InstaMember fromInstaMember = actor.getInstaMember();
+
+        if (!actor.hasConnectedInstaMember()) {
+            return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
+        }
+
+        if (actor.getInstaMember().getUsername().equals(username)) {
+            return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
+        }
+
+        long likePersonFromMax = LikeablePerson.getLikeablePersonFromMaxPeople();
+        if (fromInstaMember.getFromLikeablePeople().size() >= likePersonFromMax) {
+            return RsData.of("F-4", "호감상대는 최대 %d명까지 등록이 가능합니다.".formatted(likePersonFromMax));
+        }
+
+        LikeablePerson likeablePerson =
+                likeablePersonRepository.findByFromInstaMemberAndToInstaMember_username(actor.getInstaMember(), username);
+
+        if (likeablePerson == null) {
+            return RsData.of("S-1", "호감등록이 가능합니다.");
+        }
+
+        if (likeablePerson.getAttractiveTypeCode() == attractiveTypeCode) {
+            return RsData.of("F-3", "이미 '%s'님은 호감상대로 등록되어있습니다.".formatted(username));
+        }
+
+        return RsData.of("S-9", "호감표시 수정이 가능합니다.");
+
+    }
+
+    @Transactional
+    public RsData modifyAttractiveTypeCode(Member actor, String username, int attractiveTypeCode) {
+        LikeablePerson likeablePerson =
+                likeablePersonRepository.findByFromInstaMemberAndToInstaMember_username(actor.getInstaMember(), username);
+
+        if (likeablePerson == null) return RsData.of("F-2", "호감표시를 하지 않았습니다.");
+
+        String toAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
+        likeablePerson.setAttractiveTypeCode(attractiveTypeCode);
+        String modifyAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
+
+        return RsData.of("S-2", "%s 님의 호감사유를 '%s'에서 '%s'(으)로 변경되었습니다."
+                .formatted(username, toAttractiveTypeName, modifyAttractiveTypeName));
+    }
 }
+

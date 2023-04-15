@@ -3,6 +3,8 @@ package com.ll.gramgram.boundedContext.likeablePerson.entity;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,6 +20,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @ToString
 @Entity
 @Getter
+@Setter
+@Configuration
 public class LikeablePerson {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -31,6 +35,8 @@ public class LikeablePerson {
     @ToString.Exclude
     private InstaMember fromInstaMember; // 호감을 표시한 사람(인스타 멤버)
     private String fromInstaMemberUsername; // 혹시 몰라서 기록
+    @Getter
+    private static long likeablePersonFromMaxPeople;
     @ManyToOne
     @ToString.Exclude
     private InstaMember toInstaMember; // 호감을 받은 사람(인스타 멤버)
@@ -43,5 +49,10 @@ public class LikeablePerson {
             case 2 -> "성격";
             default -> "능력";
         };
+    }
+
+    @Value("${custom.likeablePerson.fromMaxPeople}")
+    public void setLikeablePersonFromMaxPeople(long likeablePersonFromMaxPeople) {
+        LikeablePerson.likeablePersonFromMaxPeople = likeablePersonFromMaxPeople;
     }
 }

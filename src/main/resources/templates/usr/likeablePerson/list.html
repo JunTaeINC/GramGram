@@ -6,7 +6,7 @@
 
 <body>
 
-<mai layout:fragment="main">
+<main layout:fragment="main">
     <th:block th:unless="${@rq.member.hasConnectedInstaMember}">
         <div>먼저 본인의 인스타그램 아이디를 입력해주세요.</div>
 
@@ -16,17 +16,26 @@
     </th:block>
 
     <th:block th:if="${@rq.member.hasConnectedInstaMember}">
-        <ul>
-            <li th:each="likeablePerson: ${likeablePeople}">
-                <span class="toInstaMember_username" th:text="${likeablePerson.toInstaMember.username}"></span>
-                <span class="toInstaMember_attractiveTypeDisplayName"
-                      th:text="${likeablePerson.attractiveTypeDisplayName}"></span>
-                <a href="javascript:;" onclick="if ( confirm('정말로 삭제하시겠습니까?') ) $(this).next().submit();">삭제</a>
-                <form hidden th:action="@{|delete/${likeablePerson.id}|}" method="POST"></form>
-            </li>
-        </ul>
+        <div class="">
+            <div class="text-center flex gap-5">
+                <!-- 내가 좋아하는 사람의 수 -->
+                <span th:text="|내가 좋아하는 사람의 수 : ${#lists.size(@rq.member.instaMember.fromLikeablePeople)}|"></span>
+                <!-- 나를 좋아하는 사람의 수 -->
+                <span th:text="|나를 좋아하는 사람의 수 : ${#lists.size(@rq.member.instaMember.toLikeablePeople)}|"></span>
+            </div>
+            <ul class="text-center mt-8">
+                <h3 class="mb-3">호감 목록</h3>
+                <li th:each="likeablePerson: ${likeablePeople}">
+                    <span class="toInstaMember_username" th:text="${likeablePerson.toInstaMember.username}"></span>
+                    <span class="toInstaMember_attractiveTypeDisplayName"
+                          th:text="${likeablePerson.attractiveTypeDisplayName}"></span>
+                    <a href="javascript:;" onclick="if ( confirm('정말로 삭제하시겠습니까?') ) $(this).next().submit();">삭제</a>
+                    <form hidden th:action="@{|delete/${likeablePerson.id}|}" method="POST"></form>
+                </li>
+            </ul>
+        </div>
     </th:block>
-</mai>
+</main>
 </body>
 
 </html>
