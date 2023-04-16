@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/member") // 액션 URL의 공통 접두어
@@ -71,4 +72,31 @@ public class MemberController {
     public String showMe() {
         return "usr/member/me";
     }
+
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/findId")
+    public String showFindId(FindIdForm findIdForm) {
+        return "usr/member/findId";
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/findId")
+    public String findId(@Valid FindIdForm findIdForm) {
+        RsData findRs = memberService.findUserId(findIdForm.getEmail());
+
+        if (findRs.isFail()) {
+            return rq.historyBack(findRs);
+        }
+        return rq.redirectWithMsg("/member/login", findRs);
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class FindIdForm {
+
+        @NotBlank
+        @Size(min = 4, max = 30)
+        private final String email;
+    }
+
 }

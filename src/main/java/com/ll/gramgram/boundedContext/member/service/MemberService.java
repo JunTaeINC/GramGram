@@ -70,9 +70,21 @@ public class MemberService {
     public RsData<Member> whenSocialLogin(String providerTypeCode, String username) {
         Optional<Member> opMember = findByUsername(username); // username 예시 : KAKAO__1312319038130912, NAVER__1230812300
 
-        if (opMember.isPresent()) return RsData.of("S-2", "로그인 되었습니다.", opMember.get());
+        if (opMember.isPresent()) {
+            return RsData.of("S-2", "로그인 되었습니다.", opMember.get());
+        }
 
         // 소셜 로그인를 통한 가입시 비번은 없다.
         return join(providerTypeCode, username, ""); // 최초 로그인 시 딱 한번 실행
+    }
+
+    public RsData findUserId(String email) {
+        Optional<Member> actor = memberRepository.findByEmail(email);
+        if (actor.isEmpty()) {
+            return RsData.of("F-1", "등록된 아이디를 찾을 수 없습니다.");
+        }
+
+        emailService.sendUserId(actor.get());
+        return RsData.of("S-1", "등록하신 이메일로 아이디를 발송했습니다.");
     }
 }
