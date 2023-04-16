@@ -36,8 +36,11 @@ out/
 ### VS Code ###
 .vscode/
 
+### E-mail Config ###
+EmailConfig.java
 
 ### API Key ###
 application-kakao.yml
 application-google.yml
 application-naver.yml
+application-mail.yml

@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.member.service;
 
+import com.ll.gramgram.base.email.service.EmailService;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.member.entity.Member;
@@ -19,6 +20,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     private final MemberRepository memberRepository;
+
+    private final EmailService emailService;
 
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
@@ -49,6 +52,7 @@ public class MemberService {
                 .build();
 
         memberRepository.save(member);
+        emailService.sendEmail(member);
 
         return RsData.of("S-1", "회원가입이 완료되었습니다.", member);
     }
