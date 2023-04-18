@@ -2,21 +2,18 @@ package com.ll.gramgram.boundedContext.member.controller;
 
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
+import com.ll.gramgram.boundedContext.member.entity.FindIdForm;
+import com.ll.gramgram.boundedContext.member.entity.FindPasswordForm;
+import com.ll.gramgram.boundedContext.member.entity.JoinForm;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/member") // 액션 URL의 공통 접두어
@@ -29,22 +26,6 @@ public class MemberController {
     @GetMapping("/join") // 회원가입 폼
     public String showJoin() {
         return "usr/member/join";
-    }
-
-    @AllArgsConstructor // @Setter 도 가능, 데이터를 저장할 방편을 마련하기 위해서
-    @Getter // joinForm.getUsername() 이런 코드 가능하게
-    public static class JoinForm {
-        @NotBlank // 비어있지 않아야 하고, 공백으로만 이루어 지지도 않아야 한다.
-        @Size(min = 4, max = 30) // 4자 이상, 30자 이하
-        private final String username;
-        @NotBlank
-        @Size(min = 4, max = 30)
-        private final String password;
-
-        @NotBlank
-        @Email
-        @Size(min = 4, max = 30)
-        private final String email;
     }
 
     @PreAuthorize("isAnonymous()")
@@ -82,21 +63,31 @@ public class MemberController {
     @PreAuthorize("isAnonymous()")
     @PostMapping("/findId")
     public String findId(@Valid FindIdForm findIdForm) {
-        RsData findRs = memberService.findUserId(findIdForm.getEmail());
+        RsData findIdRs = memberService.findUserId(findIdForm.getEmail());
 
-        if (findRs.isFail()) {
-            return rq.historyBack(findRs);
+        if (findIdRs.isFail()) {
+            return rq.historyBack(findIdRs);
         }
-        return rq.redirectWithMsg("/member/login", findRs);
+
+        return rq.redirectWithMsg("/member/login", findIdRs);
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class FindIdForm {
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/findPassword")
+    public String showFindPassword(FindPasswordForm findPasswordForm) {
+        return "usr/member/findPassword";
+    }
 
-        @NotBlank
-        @Size(min = 4, max = 30)
-        private final String email;
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/findPassword")
+    public String findPassword(@Valid FindPasswordForm findPasswordForm) {
+        RsData findPasswordRs = memberService.findUserPassword(findPasswordForm.getUsername(), findPasswordForm.getEmail());
+
+        if (findPasswordRs.isFail()) {
+            return rq.historyBack(findPasswordRs);
+        }
+
+        return rq.redirectWithMsg("/member/login", findPasswordRs);
     }
 
 }

@@ -59,4 +59,8 @@ public class Member {
     public boolean hasConnectedInstaMember() {
         return instaMember != null;
     }
+
+    public void modifyPassword(String password) {
+        this.password = password;
+    }
 }
