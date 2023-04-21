@@ -1,4 +1,4 @@
-<html lang="ko">
+<html data-theme="cmyk" lang="ko">
 
 <head>
 
@@ -18,7 +18,7 @@
     <script src="/resource/common/common.js"></script>
     <!-- 공통 CSS 불러오기 -->
     <link rel="stylesheet" href="/resource/common/common.css">
-    <title></title>
+    <title layout:title-pattern="$LAYOUT_TITLE | $CONTENT_TITLE">GramGram</title>
 
 </head>
 
@@ -66,7 +66,7 @@
         <div class="navbar-center">
             <a href="/" class="btn btn-ghost normal-case text-xl">gramgram</a>
         </div>
-        <span class="navbar-end" th:if="${@rq.login}" th:text="|${@rq.member.username}님 환영합니다.|"></span>
+        <span class="navbar-end text-sm" th:if="${@rq.login}" th:text="|${@rq.member.username}님 환영합니다.|"></span>
         <div class="navbar-end">
             <button class="btn btn-ghost btn-circle">
                 <div class="indicator">
