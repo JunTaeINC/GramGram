@@ -52,7 +52,7 @@ public class MemberService {
                 .build();
 
         memberRepository.save(member);
-        emailService.sendEmail(member);
+        //emailService.sendEmail(member);
 
         return RsData.of("S-1", "회원가입이 완료되었습니다.", member);
     }
