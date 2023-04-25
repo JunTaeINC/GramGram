@@ -27,22 +27,22 @@ public class LikeablePersonController {
     private final LikeablePersonService likeablePersonService;
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/add")
+    @GetMapping("/like")
     public String showAdd() {
-        return "usr/likeablePerson/add";
+        return "usr/likeablePerson/like";
     }
 
     @AllArgsConstructor
     @Getter
-    public static class AddForm {
+    public static class LikeForm {
         private final String username;
         private final int attractiveTypeCode;
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/add")
-    public String add(@Valid AddForm addForm) {
-        RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
+    @PostMapping("/like")
+    public String like(@Valid LikeForm likeForm) {
+        RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), likeForm.getUsername(), likeForm.getAttractiveTypeCode());
 
         // 3명 등록후 'insta3'이 등록되었습니다. 에러메시지 출력 노란색
 //        if(rq.getMember().getInstaMember().getFromLikeablePeople().size() > 3) {
@@ -71,9 +71,9 @@ public class LikeablePersonController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        RsData deleteRsData = likeablePersonService.delete(id, rq.getMember().getInstaMember());
+    @PostMapping("/cancel/{id}")
+    public String cancel(@PathVariable("id") Long id) {
+        RsData deleteRsData = likeablePersonService.cancel(id, rq.getMember().getInstaMember());
 
         if (deleteRsData.isFail()) {
             return rq.historyBack(deleteRsData);

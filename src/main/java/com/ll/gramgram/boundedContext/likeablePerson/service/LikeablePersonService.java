@@ -50,8 +50,8 @@ public class LikeablePersonService {
     }
 
     @Transactional
-    public RsData delete(Long id, InstaMember instaMember) {
-        RsData deleteRsData = canDelete(id, instaMember);
+    public RsData cancel(Long id, InstaMember instaMember) {
+        RsData deleteRsData = canCancel(id, instaMember);
 
         if (deleteRsData.isFail()) return deleteRsData;
 
@@ -63,7 +63,7 @@ public class LikeablePersonService {
                 .formatted(likeablePerson.getToInstaMember().getUsername()));
     }
 
-    public RsData canDelete(Long id, InstaMember instaMember) {
+    public RsData canCancel(Long id, InstaMember instaMember) {
         Optional<LikeablePerson> optionalLikeablePerson = likeablePersonRepository.findById(id);
         if (optionalLikeablePerson.isEmpty()) return RsData.of("F-2", "호감상대가 존재하지 않습니다.");
 
