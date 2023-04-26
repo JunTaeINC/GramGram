@@ -34,7 +34,7 @@ public class Member {
     @Column(unique = true)
     private String username;
     private String password;
-    @Column(unique = true)
+
     private String email;
     @OneToOne // 1:1
     @Setter // memberService::updateInstaMember 함수 때문에
