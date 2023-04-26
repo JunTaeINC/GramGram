@@ -1,7 +1,10 @@
 package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
+import com.ll.gramgram.boundedContext.member.entity.Member;
+import com.ll.gramgram.boundedContext.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,9 @@ public class LikeablePersonControllerTests {
     private MockMvc mvc;
     @Autowired
     private LikeablePersonService likeablePersonService;
+
+    @Autowired
+    private MemberService memberService;
 
     @Test
     @DisplayName("등록 폼(인스타 인증을 안해서 폼 대신 메세지)")
@@ -192,6 +198,15 @@ public class LikeablePersonControllerTests {
     @DisplayName("호감상대 10명을 초과할시 예외 발생")
     @WithUserDetails("user2")
     void t008() throws Exception {
+
+        // Only Test.
+        // LikeablePersonControllerTests / t008
+        Member memberUser2 = memberService.findByUsername("user2").get();
+        int maxValue = (int) AppConfig.getLikeablePersonFromMaxPeople();
+        for(int i = 0 ; i < maxValue ; i++) {
+            likeablePersonService.like(memberUser2, "insta_test%d".formatted(i), 2);
+        }
+
         // WHEN
         ResultActions resultActions = mvc
                 .perform(post("/usr/likeablePerson/like")
