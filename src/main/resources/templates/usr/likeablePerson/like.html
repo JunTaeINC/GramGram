@@ -8,7 +8,7 @@
 
 <main layout:fragment="main">
 
-<!--    <div th:unless="${@rq.member.hasConnectedInstaMember}" th:include="usr/part/needToConnect::base"></div>-->
+    <div th:unless="${@rq.member.hasConnectedInstaMember}" th:include="usr/part/needToConnect::base"></div>
 
     <th:block th:if="${@rq.member.hasConnectedInstaMember}">
         <script th:inline="javascript">
