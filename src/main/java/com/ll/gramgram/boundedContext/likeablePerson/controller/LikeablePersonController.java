@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/likeablePerson")
+@RequestMapping("/usr/likeablePerson")
 @RequiredArgsConstructor
 public class LikeablePersonController {
     private final Rq rq;
@@ -53,7 +53,7 @@ public class LikeablePersonController {
             return rq.historyBack(createRsData);
         }
 
-        return rq.redirectWithMsg("/likeablePerson/list", createRsData);
+        return rq.redirectWithMsg("/usr/likeablePerson/list", createRsData);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -79,6 +79,6 @@ public class LikeablePersonController {
             return rq.historyBack(deleteRsData);
         }
 
-        return rq.redirectWithMsg("/likeablePerson/list", deleteRsData);
+        return rq.redirectWithMsg("/usr/likeablePerson/list", deleteRsData);
     }
 }
