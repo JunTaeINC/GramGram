@@ -71,12 +71,14 @@
             <div>
                 <a href="/" class="btn btn-ghost normal-case text-xl">
                     <span class="hidden min-[341px]:inline">GramGram</span>
+                    <span th:if="${@rq.logout}" class="min-[341px]:hidden">G.G</span>
+                    <span th:if="${@rq.login}" class="max-[250px]:hidden min-[341px]:hidden">G.G</span>
                 </a>
             </div>
 
             <div class="flex-grow flex justify-end">
                 <span class="text-sm" th:if="${@rq.login}" th:text="|${@rq.member.username}|"></span>
-                <button class="btn btn-ghost btn-circle">
+                <button class="btn btn-ghost btn-circle !hidden min-[300px]:!block">
                     <div class="indicator">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                              stroke="currentColor">
