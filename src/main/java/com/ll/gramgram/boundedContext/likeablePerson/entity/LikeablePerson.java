@@ -35,8 +35,7 @@ public class LikeablePerson {
     @ToString.Exclude
     private InstaMember fromInstaMember; // 호감을 표시한 사람(인스타 멤버)
     private String fromInstaMemberUsername; // 혹시 몰라서 기록
-    @Getter
-    private static long likeablePersonFromMaxPeople;
+
     @ManyToOne
     @ToString.Exclude
     private InstaMember toInstaMember; // 호감을 받은 사람(인스타 멤버)
@@ -49,10 +48,5 @@ public class LikeablePerson {
             case 2 -> "성격";
             default -> "능력";
         };
-    }
-
-    @Value("${custom.likeablePerson.fromMaxPeople}")
-    public void setLikeablePersonFromMaxPeople(long likeablePersonFromMaxPeople) {
-        LikeablePerson.likeablePersonFromMaxPeople = likeablePersonFromMaxPeople;
     }
 }

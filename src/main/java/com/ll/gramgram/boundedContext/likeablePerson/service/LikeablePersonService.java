@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
@@ -92,7 +93,7 @@ public class LikeablePersonService {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
         }
 
-        long likePersonFromMax = LikeablePerson.getLikeablePersonFromMaxPeople();
+        long likePersonFromMax = AppConfig.getLikeablePersonFromMaxPeople();
         if (fromInstaMember.getFromLikeablePeople().size() >= likePersonFromMax) {
             return RsData.of("F-4", "호감상대는 최대 %d명까지 등록이 가능합니다.".formatted(likePersonFromMax));
         }
