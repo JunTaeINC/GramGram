@@ -47,7 +47,7 @@ public class LikeablePersonService {
         fromInstaMember.addFromLikeablePerson(likeablePerson);
         toInstaMember.addToLikeablePerson(likeablePerson);
 
-        return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
+        return RsData.of("S-1", "'%s'님을 호감상대로 등록하였습니다.".formatted(username), likeablePerson);
     }
 
     @Transactional
@@ -76,7 +76,6 @@ public class LikeablePersonService {
         }
         return RsData.of("S-9", "호감상대 삭제 가능합니다.", likeablePerson);
     }
-
 
     public Optional<LikeablePerson> findById(Long id) {
         return likeablePersonRepository.findById(id);
@@ -120,12 +119,12 @@ public class LikeablePersonService {
 
         if (likeablePerson == null) return RsData.of("F-2", "호감표시를 하지 않았습니다.");
 
-        String toAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
+        String oldAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
         likeablePerson.setAttractiveTypeCode(attractiveTypeCode);
-        String modifyAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
+        String newAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
 
-        return RsData.of("S-2", "%s 님의 호감사유를 '%s'에서 '%s'(으)로 변경되었습니다."
-                .formatted(username, toAttractiveTypeName, modifyAttractiveTypeName));
+        return RsData.of("S-2", "'%s'님의 호감사유를 '%s'에서 '%s'(으)로 변경되었습니다."
+                .formatted(username, oldAttractiveTypeName, newAttractiveTypeName));
     }
 
     @Transactional
@@ -137,9 +136,12 @@ public class LikeablePersonService {
             return canModifyRsData;
         }
 
+        String toUsername = likeablePerson.getToInstaMemberUsername();
+        String oldAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
         likeablePerson.setAttractiveTypeCode(attractiveTypeCode);
-
-        return RsData.of("S-1", "호감사유를 수정하였습니다.");
+        String newAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
+        return RsData.of("S-1", "'%s'님의 호감사유를 '%s'에서 '%s'(으)로 수정하였습니다."
+                .formatted(toUsername, oldAttractiveTypeName, newAttractiveTypeName));
     }
 
     public RsData canModifyLike(Member actor, LikeablePerson likeablePerson) {
@@ -152,7 +154,6 @@ public class LikeablePersonService {
         if (!Objects.equals(likeablePerson.getFromInstaMember().getId(), fromInstaMember.getId())) {
             return RsData.of("F-2", "해당 호감표시를 취소할 권한이 없습니다.");
         }
-
 
         return RsData.of("S-1", "호감표시취소가 가능합니다.");
     }
