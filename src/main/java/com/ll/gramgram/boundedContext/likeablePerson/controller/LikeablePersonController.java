@@ -3,11 +3,11 @@ package com.ll.gramgram.boundedContext.likeablePerson.controller;
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
+import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeForm;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
+import com.ll.gramgram.boundedContext.likeablePerson.entity.ModifyForm;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -30,13 +30,6 @@ public class LikeablePersonController {
     @GetMapping("/like")
     public String showAdd() {
         return "usr/likeablePerson/like";
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class LikeForm {
-        private final String username;
-        private final int attractiveTypeCode;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -89,12 +82,6 @@ public class LikeablePersonController {
         model.addAttribute("likeablePerson", likeablePerson);
 
         return "usr/likeablePerson/modify";
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class ModifyForm {
-        private final int attractiveTypeCode;
     }
 
     @PreAuthorize("isAuthenticated()")

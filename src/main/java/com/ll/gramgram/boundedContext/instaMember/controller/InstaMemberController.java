@@ -2,13 +2,10 @@ package com.ll.gramgram.boundedContext.instaMember.controller;
 
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
+import com.ll.gramgram.boundedContext.instaMember.entity.ConnectForm;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -28,17 +25,6 @@ public class InstaMemberController {
     @GetMapping("/connect")
     public String showConnect() {
         return "usr/instaMember/connect";
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class ConnectForm {
-        @NotBlank
-        @Size(min = 3, max = 30)
-        private final String username;
-        @NotBlank
-        @Size(min = 1, max = 1)
-        private final String gender;
     }
 
     @PreAuthorize("isAuthenticated()")
