@@ -10,7 +10,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public String handleNotFoundError(Model model, NoHandlerFoundException noHandlerFoundException) {
-        model.addAttribute("exception" , noHandlerFoundException);
+        model.addAttribute("exception", noHandlerFoundException);
         return "error/404";
     }
 }
