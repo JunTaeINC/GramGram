@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
@@ -35,8 +34,13 @@ public class LikeablePerson extends BaseEntity {
             default -> "능력";
         };
     }
-    public void setAttractiveTypeCode(int attractiveTypeCode) {
-        this.attractiveTypeCode = attractiveTypeCode;
+
+    public void updateAttractiveTypeCode(int attractiveTypeCode) {
+        if (this.attractiveTypeCode != attractiveTypeCode) {
+            toInstaMember.decreaseLikesCount(fromInstaMember.getGender(), this.attractiveTypeCode);
+            toInstaMember.increaseLikesCount(fromInstaMember.getGender(), attractiveTypeCode);
+            this.attractiveTypeCode = attractiveTypeCode;
+        }
     }
 
 

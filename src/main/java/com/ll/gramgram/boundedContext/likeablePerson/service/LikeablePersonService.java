@@ -47,6 +47,12 @@ public class LikeablePersonService {
         fromInstaMember.addFromLikeablePerson(likeablePerson);
         toInstaMember.addToLikeablePerson(likeablePerson);
 
+        fromInstaMember.addFromLikeablePerson(likeablePerson);
+
+        toInstaMember.addToLikeablePerson(likeablePerson);
+
+        toInstaMember.increaseLikesCount(fromInstaMember.getGender(), attractiveTypeCode);
+
         return RsData.of("S-1", "'%s'님을 호감상대로 등록하였습니다.".formatted(username), likeablePerson);
     }
 
@@ -57,6 +63,13 @@ public class LikeablePersonService {
         if (deleteRsData.isFail()) return deleteRsData;
 
         LikeablePerson likeablePerson = (LikeablePerson) deleteRsData.getData();
+
+        likeablePerson.getFromInstaMember().removeFromLikeablePerson(likeablePerson);
+
+        likeablePerson.getToInstaMember().removeToLikeablePerson(likeablePerson);
+
+        likeablePerson.getToInstaMember().decreaseLikesCount(likeablePerson.getFromInstaMember().getGender()
+                , likeablePerson.getAttractiveTypeCode());
 
         likeablePersonRepository.delete(likeablePerson);
 
@@ -120,7 +133,7 @@ public class LikeablePersonService {
         if (likeablePerson == null) return RsData.of("F-2", "호감표시를 하지 않았습니다.");
 
         String oldAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
-        likeablePerson.setAttractiveTypeCode(attractiveTypeCode);
+        likeablePerson.updateAttractiveTypeCode(attractiveTypeCode);
         String newAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
 
         return RsData.of("S-2", "'%s'님의 호감사유를 '%s'에서 '%s'(으)로 변경되었습니다."
@@ -138,7 +151,7 @@ public class LikeablePersonService {
 
         String toUsername = likeablePerson.getToInstaMemberUsername();
         String oldAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
-        likeablePerson.setAttractiveTypeCode(attractiveTypeCode);
+        likeablePerson.updateAttractiveTypeCode(attractiveTypeCode);
         String newAttractiveTypeName = likeablePerson.getAttractiveTypeDisplayName();
         return RsData.of("S-1", "'%s'님의 호감사유를 '%s'에서 '%s'(으)로 수정하였습니다."
                 .formatted(toUsername, oldAttractiveTypeName, newAttractiveTypeName));
