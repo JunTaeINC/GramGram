@@ -89,6 +89,21 @@ public class InstaMember extends BaseEntity {
         };
     }
 
+    public void updateGender(String gender) {
+        String oldGender = this.gender;
+
+        if (!this.gender.equals(gender)) {
+            getFromLikeablePeople()
+                    .stream()
+                    .forEach(likeablePerson -> {
+                        InstaMember toInstamember = likeablePerson.getToInstaMember();
+                        toInstamember.decreaseLikesCount(oldGender, likeablePerson.getAttractiveTypeCode());
+                        toInstamember.increaseLikesCount(gender, likeablePerson.getAttractiveTypeCode());
+                    });
+            this.gender = gender;
+        }
+    }
+
     public void increaseLikesCount(String gender, int attractiveTypeCode) {
         if (gender.equals("W") && attractiveTypeCode == 1) likesCountByGenderWomanAndAttractiveTypeCode1++;
         if (gender.equals("W") && attractiveTypeCode == 2) likesCountByGenderWomanAndAttractiveTypeCode2++;
