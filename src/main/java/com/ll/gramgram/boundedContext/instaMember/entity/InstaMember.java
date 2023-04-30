@@ -35,11 +35,6 @@ public class InstaMember extends InstaMemberBase {
     // 클래스에 빌더가 적혀있고 private List<LikeablePerson> toLikeablePeople = new ArrayList<>(); 이렇게 하면 다날라간다.
     private List<LikeablePerson> toLikeablePeople = new ArrayList<>();
 
-    @OneToMany(mappedBy = "instaMember", cascade = {CascadeType.ALL})
-    @OrderBy("id desc")
-    @Builder.Default
-    private List<InstaMemberSnapshot> instaMemberSnapshots = new ArrayList<>();
-
     public void addFromLikeablePerson(LikeablePerson likeablePerson) {
         fromLikeablePeople.add(0, likeablePerson);
     }
@@ -64,22 +59,7 @@ public class InstaMember extends InstaMemberBase {
     }
 
     public void updateGender(String gender) {
-        String oldGender = this.gender;
-
-        boolean oldIsNull = this.gender == null;
-
-        if (!this.gender.equals(gender)) {
-            getFromLikeablePeople()
-                    .stream()
-                    .forEach(likeablePerson -> {
-                        InstaMember toInstamember = likeablePerson.getToInstaMember();
-                        toInstamember.decreaseLikesCount(oldGender, likeablePerson.getAttractiveTypeCode());
-                        toInstamember.increaseLikesCount(gender, likeablePerson.getAttractiveTypeCode());
-                    });
-            this.gender = gender;
-        }
-
-        if (!oldIsNull) saveSnapshot();
+        this.gender = gender;
     }
 
     public void increaseLikesCount(String gender, int attractiveTypeCode) {
@@ -89,8 +69,6 @@ public class InstaMember extends InstaMemberBase {
         if (gender.equals("M") && attractiveTypeCode == 1) likesCountByGenderManAndAttractiveTypeCode1++;
         if (gender.equals("M") && attractiveTypeCode == 2) likesCountByGenderManAndAttractiveTypeCode2++;
         if (gender.equals("M") && attractiveTypeCode == 3) likesCountByGenderManAndAttractiveTypeCode3++;
-
-        saveSnapshot();
     }
 
     public void decreaseLikesCount(String gender, int attractiveTypeCode) {
@@ -100,22 +78,21 @@ public class InstaMember extends InstaMemberBase {
         if (gender.equals("M") && attractiveTypeCode == 1) likesCountByGenderManAndAttractiveTypeCode1--;
         if (gender.equals("M") && attractiveTypeCode == 2) likesCountByGenderManAndAttractiveTypeCode2--;
         if (gender.equals("M") && attractiveTypeCode == 3) likesCountByGenderManAndAttractiveTypeCode3--;
-
-        saveSnapshot();
     }
 
-    public void saveSnapshot() {
-        InstaMemberSnapshot instaMemberSnapshot = InstaMemberSnapshot.builder()
-                .instaMember(this)
+    public InstaMemberSnapshot snapshot(String eventTypeCode) {
+        return InstaMemberSnapshot
+                .builder()
+                .eventTypeCode(eventTypeCode)
                 .username(username)
-                .likesCountByGenderWomanAndAttractiveTypeCode1(likesCountByGenderWomanAndAttractiveTypeCode1)
-                .likesCountByGenderWomanAndAttractiveTypeCode2(likesCountByGenderWomanAndAttractiveTypeCode2)
-                .likesCountByGenderWomanAndAttractiveTypeCode3(likesCountByGenderWomanAndAttractiveTypeCode3)
+                .instaMember(this)
+                .gender(gender)
                 .likesCountByGenderManAndAttractiveTypeCode1(likesCountByGenderManAndAttractiveTypeCode1)
                 .likesCountByGenderManAndAttractiveTypeCode2(likesCountByGenderManAndAttractiveTypeCode2)
                 .likesCountByGenderManAndAttractiveTypeCode3(likesCountByGenderManAndAttractiveTypeCode3)
+                .likesCountByGenderWomanAndAttractiveTypeCode1(likesCountByGenderWomanAndAttractiveTypeCode1)
+                .likesCountByGenderWomanAndAttractiveTypeCode2(likesCountByGenderWomanAndAttractiveTypeCode2)
+                .likesCountByGenderWomanAndAttractiveTypeCode3(likesCountByGenderWomanAndAttractiveTypeCode3)
                 .build();
-
-        instaMemberSnapshots.add(instaMemberSnapshot);
     }
 }

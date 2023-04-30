@@ -61,11 +61,15 @@ public class LikeablePersonController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/cancel/{id}")
     public String cancel(@PathVariable("id") Long id) {
-        RsData deleteRsData = likeablePersonService.cancel(id, rq.getMember().getInstaMember());
+        LikeablePerson likeablePerson = likeablePersonService.findById(id).orElse(null);
 
-        if (deleteRsData.isFail()) {
-            return rq.historyBack(deleteRsData);
-        }
+        RsData canDeleteRsData = likeablePersonService.canCancel(rq.getMember(), likeablePerson);
+
+        if (canDeleteRsData.isFail()) return rq.historyBack(canDeleteRsData);
+
+        RsData deleteRsData = likeablePersonService.cancel(likeablePerson);
+
+        if (deleteRsData.isFail()) return rq.historyBack(deleteRsData);
 
         return rq.redirectWithMsg("/usr/likeablePerson/list", deleteRsData);
     }

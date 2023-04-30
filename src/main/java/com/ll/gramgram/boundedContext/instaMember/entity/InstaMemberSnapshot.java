@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 public class InstaMemberSnapshot extends InstaMemberBase {
 
     private String username;
+    private String eventTypeCode;
 
     @ToString.Exclude // ToString() 에서 제외
     @ManyToOne
