@@ -15,6 +15,7 @@
             </h1>
 
             <form th:action method="POST" class="flex flex-col gap-6" onsubmit="LoginForm__submit(this); return false;">
+                <th:block th:if="${param.admin}">
                 <div class="form-control">
                     <input type="text" name="username" maxlength="30" placeholder="아이디" class="input input-bordered">
                 </div>
@@ -27,6 +28,7 @@
                 <div>
                     <input type="submit" value="로그인" class="btn btn-block btn-primary gap-1">
                 </div>
+                </th:block>
 
                 <button class="btn gap-1">
 
@@ -46,17 +48,20 @@
                         <i class="fa-brands fa-google text-[color:#4285f4]"></i> 구글 로그인하기
                     </a>
                 </button>
+
             </form>
-            <button class="btn btn-primary btn-sm">
-                <a href="/member/findId">
-                    <i class="fa-solid fa-magnifying-glass"></i> 아이디 찾기
-                </a>
-            </button>
-            <button class="btn btn-primary btn-sm">
-                <a href="/member/findPassword">
-                    <i class="fa-solid fa-key"></i> 비밀번호 찾기
-                </a>
-            </button>
+            <div class="flex flex-wrap justify-center gap-2">
+                <button class="btn btn-primary btn-sm">
+                    <a href="/usr/member/findId">
+                        <i class="fa-solid fa-magnifying-glass"></i> 아이디 찾기
+                    </a>
+                </button>
+                <button class="btn btn-primary btn-sm">
+                    <a href="/usr/member/findPassword">
+                        <i class="fa-solid fa-key"></i> 비밀번호 찾기
+                    </a>
+                </button>
+            </div>
         </div>
     </div>
     <script>
