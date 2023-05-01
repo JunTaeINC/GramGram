@@ -2,6 +2,7 @@ package com.ll.gramgram.boundedContext.instaMember.controller;
 
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
+import com.ll.gramgram.boundedContext.instaMember.entity.ConnectByApiForm;
 import com.ll.gramgram.boundedContext.instaMember.entity.ConnectForm;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
@@ -37,5 +38,20 @@ public class InstaMemberController {
         }
 
         return rq.redirectWithMsg("/usr/likeablePerson/like", "인스타그램 계정이 연결되었습니다.");
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/connectByApi")
+    public String showConnectByApi() {
+        return "usr/instaMember/connectByApi";
+    }
+
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/connectByApi")
+    public String connectByApi(@Valid ConnectByApiForm connectForm) {
+        rq.setSessionAttr("connectByApi__gender", connectForm.getGender());
+
+        return "redirect:/oauth2/authorization/instagram";
     }
 }
