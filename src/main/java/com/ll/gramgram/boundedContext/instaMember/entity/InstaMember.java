@@ -58,6 +58,13 @@ public class InstaMember extends InstaMemberBase {
         };
     }
 
+    public String getGenderDisplayNameWithIcon() {
+        return switch (gender) {
+            case "W" -> "<i class=\"fa-solid fa-person-dress\"></i>";
+            default -> "<i class=\"fa-solid fa-person\"></i>";
+        } + "&nbsp;" + getGenderDisplayName();
+    }
+
     public void updateGender(String gender) {
         this.gender = gender;
     }

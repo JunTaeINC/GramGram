@@ -15,15 +15,25 @@
             </h1>
 
             <form th:action method="POST" class="flex flex-col gap-6" onsubmit="LoginForm__submit(this); return false;">
-                <th:block th:if="${@rq.refererAdminPage}">
+                <th:block th:if="${@rq.refererAdminPage or param.admin != null}">
                     <div class="form-control">
-                        <input type="text" name="username" maxlength="30" placeholder="아이디"
-                               class="input input-bordered">
+                        <label class="label">
+                        <span class="label-text">
+                            <i class="fa-regular fa-id-badge"></i>
+                            아이디
+                        </span>
+                        </label>
+                        <input type="text" name="username" placeholder="아이디" class="input input-bordered" autofocus/>
                     </div>
 
                     <div class="form-control">
-                        <input type="password" name="password" maxlength="30" placeholder="비밀번호"
-                               class="input input-bordered">
+                        <label class="label">
+                        <span class="label-text">
+                            <i class="fa-solid fa-key"></i>
+                            비빌번호
+                        </span>
+                        </label>
+                        <input type="password" name="password" placeholder="비빌번호" class="input input-bordered"/>
                     </div>
 
                     <div>

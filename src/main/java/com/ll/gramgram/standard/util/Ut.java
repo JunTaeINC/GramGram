@@ -2,6 +2,9 @@ package com.ll.gramgram.standard.util;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 public class Ut {
     public static class url {
@@ -42,6 +45,27 @@ public class Ut {
             String urlAfter = url.substring(startPoint + endPoint + 1);
 
             return url.substring(0, startPoint) + urlAfter;
+        }
+    }
+
+    public static class hash {
+        private static final MessageDigest md;
+
+        static {
+            try {
+                md = MessageDigest.getInstance("SHA-256");
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public static String sha256(String str) {
+            // Convert the input string to bytes and update the MessageDigest
+            byte[] inputBytes = str.getBytes(StandardCharsets.UTF_8);
+            byte[] hashBytes = md.digest(inputBytes);
+
+            // Convert the hashed bytes to a Base64 encoded string
+            return Base64.getEncoder().encodeToString(hashBytes);
         }
     }
 }
