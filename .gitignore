@@ -38,9 +38,10 @@ out/
 
 ### E-mail Config ###
 EmailConfig.java
-
+keystore.p12
 ### API Key ###
 application-kakao.yml
 application-google.yml
 application-naver.yml
 application-mail.yml
+application-facebook.yml
