@@ -23,23 +23,23 @@ public class MemberController {
     private final MemberService memberService;
     private final Rq rq;
 
-    @PreAuthorize("isAnonymous()")
-    @GetMapping("/join")
-    public String showJoin() {
-        return "usr/member/join";
-    }
-
-    @PreAuthorize("isAnonymous()")
-    @PostMapping("/join")
-    public String join(@Valid JoinForm joinForm) {
-        RsData<Member> joinRs = memberService.join(joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail());
-
-        if (joinRs.isFail()) {
-            return rq.historyBack(joinRs);
-        }
-
-        return rq.redirectWithMsg("/usr/member/login", joinRs);
-    }
+//    @PreAuthorize("isAnonymous()")
+//    @GetMapping("/join")
+//    public String showJoin() {
+//        return "usr/member/join";
+//    }
+//
+//    @PreAuthorize("isAnonymous()")
+//    @PostMapping("/join")
+//    public String join(@Valid JoinForm joinForm) {
+//        RsData<Member> joinRs = memberService.join(joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail());
+//
+//        if (joinRs.isFail()) {
+//            return rq.historyBack(joinRs);
+//        }
+//
+//        return rq.redirectWithMsg("/usr/member/login", joinRs);
+//    }
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
@@ -50,10 +50,9 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
     public String showMe(Model model) {
-        if (!rq.getMember().hasConnectedInstaMember()) {
-            return rq.historyBack("먼저 본인의 인스타그램 아이디를 입력해주세요.");
-        }
-
+//        if (!rq.getMember().hasConnectedInstaMember()) {
+//            return rq.historyBack("먼저 본인의 인스타그램 아이디를 입력해주세요.");
+//        }
         return "usr/member/me";
     }
 

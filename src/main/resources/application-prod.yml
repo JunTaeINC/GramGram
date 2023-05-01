@@ -1,6 +1,6 @@
 logging:
   level:
     root: INFO
-    com.ll.gramgram: INFO
+    com.ll.gramgram_ai: INFO
     org.hibernate.orm.jdbc.bind: INFO
     org.hibernate.orm.jdbc.extract: INFO
