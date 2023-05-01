@@ -5,19 +5,31 @@ import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
+import com.ll.gramgram.standard.util.Ut;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-
-import com.ll.gramgram.standard.util.Ut;
-import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 @Profile({"dev", "test"})
 public class NotProd {
+    @Value("${custom.security.oauth2.client.registration.kakao.devUserOauthId}")
+    private String kakaoDevUserOAuthId;
+
+    @Value("${custom.security.oauth2.client.registration.naver.devUserOauthId}")
+    private String naverDevUserOAuthId;
+
+    @Value("${custom.security.oauth2.client.registration.google.devUserOauthId}")
+    private String googleDevUserOAuthId;
+
+    @Value("${custom.security.oauth2.client.registration.facebook.devUserOauthId}")
+    private String facebookDevUserOAuthId;
+
     @Bean
     CommandLineRunner initData(
             MemberService memberService,
@@ -28,16 +40,17 @@ public class NotProd {
             @Override
             @Transactional
             public void run(String... args) throws Exception {
-                Member memberAdmin = memberService.join("admin", "1234", "abcd@naver.com").getData();
-                Member memberUser1 = memberService.join("user1", "1234", "abcd@naver.com").getData();
-                Member memberUser2 = memberService.join("user2", "1234", "abcd@naver.com").getData();
-                Member memberUser3 = memberService.join("user3", "1234", "abcd@naver.com").getData();
-                Member memberUser4 = memberService.join("user4", "1234", "abcd@naver.com").getData();
-                Member memberUser5 = memberService.join("user5", "1234", "abcd@naver.com").getData();
+                Member memberAdmin = memberService.join("admin", "1234", "abcd@naber.com").getData();
+                Member memberUser1 = memberService.join("user1", "1234", "abcd@naber.com").getData();
+                Member memberUser2 = memberService.join("user2", "1234", "abcd@naber.com").getData();
+                Member memberUser3 = memberService.join("user3", "1234", "abcd@naber.com").getData();
+                Member memberUser4 = memberService.join("user4", "1234", "abcd@naber.com").getData();
+                Member memberUser5 = memberService.join("user5", "1234", "abcd@naber.com").getData();
 
-                Member memberUser5ByKakao = memberService.whenSocialLogin("KAKAO", "KAKAO__2733176564").getData();
-                Member memberUser5ByGoogle = memberService.whenSocialLogin("GOOGLE", "GOOGLE__107628735217902602702").getData();
-                Member memberUser5ByNaver = memberService.whenSocialLogin("NAVER", "NAVER__x_8xYuMJ__uXus9-JHiePYcj-NeMMHIvPpYNFBzo-aY").getData();
+                Member memberUser6ByKakao = memberService.whenSocialLogin("KAKAO", "KAKAO__%s".formatted(kakaoDevUserOAuthId)).getData();
+                Member memberUser7ByGoogle = memberService.whenSocialLogin("GOOGLE", "GOOGLE__%s".formatted(googleDevUserOAuthId)).getData();
+                Member memberUser8ByNaver = memberService.whenSocialLogin("NAVER", "NAVER__%s".formatted(naverDevUserOAuthId)).getData();
+                Member memberUser9ByFacebook = memberService.whenSocialLogin("FACEBOOK", "FACEBOOK__%s".formatted(facebookDevUserOAuthId)).getData();
 
                 instaMemberService.connect(memberUser2, "insta_user2", "M");
                 instaMemberService.connect(memberUser3, "insta_user3", "W");
