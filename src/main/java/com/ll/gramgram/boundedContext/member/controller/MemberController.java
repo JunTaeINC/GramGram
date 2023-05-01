@@ -4,8 +4,6 @@ import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.member.entity.FindIdForm;
 import com.ll.gramgram.boundedContext.member.entity.FindPasswordForm;
-import com.ll.gramgram.boundedContext.member.entity.JoinForm;
-import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

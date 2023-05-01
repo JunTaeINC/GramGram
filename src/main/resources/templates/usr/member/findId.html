@@ -14,7 +14,8 @@
                 아이디 찾기
             </h1>
             <h2 class="mb-5">회원가입시 등록했던 이메일을 입력해주세요!</h2>
-            <form th:action method="POST" class="flex flex-col gap-6" onsubmit="FindIdForm__submit(this); return false;">
+            <form th:action method="POST" class="flex flex-col gap-6"
+                  onsubmit="FindIdForm__submit(this); return false;">
                 <div class="form-control">
                     <input type="text" name="email" maxlength="30" placeholder="이메일" class="input input-bordered">
                 </div>

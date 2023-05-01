@@ -203,7 +203,7 @@ public class LikeablePersonControllerTests {
         // LikeablePersonControllerTests / t008
         Member memberUser2 = memberService.findByUsername("user2").get();
         int maxValue = (int) AppConfig.getLikeablePersonFromMaxPeople();
-        for(int i = 0 ; i < maxValue ; i++) {
+        for (int i = 0; i < maxValue; i++) {
             likeablePersonService.like(memberUser2, "insta_test%d".formatted(i), 2);
         }
 
