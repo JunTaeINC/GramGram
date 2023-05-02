@@ -87,6 +87,10 @@ public class LikeablePersonService {
 
         long fromInstaMemberId = likeablePerson.getFromInstaMember().getId();
 
+        if (!likeablePerson.getModifyUnlockDate().isBefore(LocalDateTime.now())) {
+            return RsData.of("F-3", "해당 게시물을 삭제하기엔 이릅니다. 이후에 다시 시도해주세요.");
+        }
+
         if (actorInstaMemberId != fromInstaMemberId)
             return RsData.of("F-2", "권한이 없습니다.");
 
