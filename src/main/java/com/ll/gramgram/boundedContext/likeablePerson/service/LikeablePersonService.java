@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -175,10 +176,13 @@ public class LikeablePersonService {
         return modifyAttractive(actor, fromLikeablePerson, attractiveTypeCode);
     }
 
-
     public RsData canModifyLike(Member actor, LikeablePerson likeablePerson) {
         if (!actor.hasConnectedInstaMember()) {
             return RsData.of("F-1", "먼저 본인의 인스타그램 아이디를 입력해주세요.");
+        }
+
+        if (!likeablePerson.getModifyUnlockDate().isBefore(LocalDateTime.now())) {
+            return RsData.of("F-3", "해당 게시물을 수정하기엔 이릅니다. 이후 다시 시도해주세요.");
         }
 
         InstaMember fromInstaMember = actor.getInstaMember();
