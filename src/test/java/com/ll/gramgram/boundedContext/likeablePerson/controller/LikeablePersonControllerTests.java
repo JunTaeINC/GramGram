@@ -391,7 +391,6 @@ public class LikeablePersonControllerTests {
         assertThat(newAttractiveTypeCode).isEqualTo(2);
     }
 
-
     @Test
     @DisplayName("호감사유 변경시 쿨타임 적용")
     @WithUserDetails("user5")
@@ -409,6 +408,24 @@ public class LikeablePersonControllerTests {
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("modify"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @DisplayName("호감표시 삭제시 쿨타임 적용")
+    @WithUserDetails("user5")
+    void t017() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/usr/likeablePerson/cancel/1")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("cancel"))
                 .andExpect(status().is4xxClientError());
     }
 }
