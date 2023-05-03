@@ -27,7 +27,7 @@ public class Notification extends BaseEntity {
     private InstaMember fromInstaMember;
     private String typeCode;
     private String oldGender;
-    private int oldAttractiveTypeCode;
     private String newGender;
+    private int oldAttractiveTypeCode;
     private int newAttractiveTypeCode;
 }

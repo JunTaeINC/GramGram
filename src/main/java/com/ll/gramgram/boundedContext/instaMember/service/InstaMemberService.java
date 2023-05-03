@@ -91,6 +91,7 @@ public class InstaMemberService {
         instaMemberSnapshotRepository.save(snapshot);
     }
 
+    @Transactional
     public void whenAfterModifyAttractiveType(LikeablePerson likeablePerson, int oldAttractiveTypeCode) {
         InstaMember fromInstaMember = likeablePerson.getFromInstaMember();
         InstaMember toInstaMember = likeablePerson.getToInstaMember();
@@ -103,6 +104,7 @@ public class InstaMemberService {
         saveSnapshot(snapshot);
     }
 
+    @Transactional
     public void whenAfterLike(LikeablePerson likeablePerson) {
         InstaMember fromInstaMember = likeablePerson.getFromInstaMember();
         InstaMember toInstaMember = likeablePerson.getToInstaMember();
@@ -116,6 +118,7 @@ public class InstaMemberService {
         // 알림
     }
 
+    @Transactional
     public void whenBeforeCancelLike(LikeablePerson likeablePerson) {
         InstaMember fromInstaMember = likeablePerson.getFromInstaMember();
         InstaMember toInstaMember = likeablePerson.getToInstaMember();
@@ -127,6 +130,7 @@ public class InstaMemberService {
         saveSnapshot(snapshot);
     }
 
+    @Transactional
     public void whenAfterFromInstaMemberChangeGender(InstaMember instaMember, String oldGender) {
         instaMember
                 .getFromLikeablePeople()

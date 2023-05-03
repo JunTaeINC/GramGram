@@ -80,7 +80,7 @@
                                     &nbsp;
                                     호감취소
                                 </a>
-                                <form hidden th:action="@{|/usr/likeablePerson/${likeablePerson.id}|}" method="POST">
+                                <form hidden th:action="@{|/usr/likeablePerson/cancel/${likeablePerson.id}|}" method="POST">
                                     <input type="hidden" name="_method" value="delete">
                                 </form>
                             </div>
