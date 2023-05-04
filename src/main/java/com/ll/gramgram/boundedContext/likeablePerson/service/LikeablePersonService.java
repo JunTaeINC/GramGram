@@ -163,7 +163,8 @@ public class LikeablePersonService {
                 .formatted(username, oldAttractiveTypeDisplayName, newAttractiveTypeDisplayName));
     }
 
-    private RsData<LikeablePerson> modifyAttractive(Member actor, String username, int attractiveTypeCode) {
+    @Transactional
+    public RsData<LikeablePerson> modifyAttractive(Member actor, String username, int attractiveTypeCode) {
         List<LikeablePerson> fromLikeablePeople = actor.getInstaMember().getFromLikeablePeople();
 
         LikeablePerson fromLikeablePerson = fromLikeablePeople
