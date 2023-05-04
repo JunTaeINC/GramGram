@@ -133,36 +133,36 @@ public class LikeablePersonControllerTests {
                 .andExpect(status().is3xxRedirection());
     }
 
-//    @Test
-//    @DisplayName("수정 폼")
-//    @WithUserDetails("user3")
-//    void t005() throws Exception {
-//        // WHEN
-//        ResultActions resultActions = mvc
-//                .perform(get("/usr/likeablePerson/modify/2"))
-//                .andDo(print());
-//
-//        // THEN
-//        resultActions
-//                .andExpect(handler().handlerType(LikeablePersonController.class))
-//                .andExpect(handler().methodName("showModify"))
-//                .andExpect(status().is2xxSuccessful())
-//                .andExpect(content().string(containsString("""
-//                        <input type="radio" name="attractiveTypeCode" value="1"
-//                        """.stripIndent().trim())))
-//                .andExpect(content().string(containsString("""
-//                        <input type="radio" name="attractiveTypeCode" value="2"
-//                        """.stripIndent().trim())))
-//                .andExpect(content().string(containsString("""
-//                        <input type="radio" name="attractiveTypeCode" value="3"
-//                        """.stripIndent().trim())))
-//                .andExpect(content().string(containsString("""
-//                        inputValue__attractiveTypeCode = 2;
-//                        """.stripIndent().trim())))
-//                .andExpect(content().string(containsString("""
-//                        id="btn-modify-like-1"
-//                        """.stripIndent().trim())));
-//    }
+    @Test
+    @DisplayName("수정 폼")
+    @WithUserDetails("user3")
+    void t005() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/modify/2"))
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showModify"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string(containsString("""
+                        <input type="radio" name="attractiveTypeCode" value="1"
+                        """.stripIndent().trim())))
+                .andExpect(content().string(containsString("""
+                        <input type="radio" name="attractiveTypeCode" value="2"
+                        """.stripIndent().trim())))
+                .andExpect(content().string(containsString("""
+                        <input type="radio" name="attractiveTypeCode" value="3"
+                        """.stripIndent().trim())))
+                .andExpect(content().string(containsString("""
+                        inputValue__attractiveTypeCode = 2;
+                        """.stripIndent().trim())))
+                .andExpect(content().string(containsString("""
+                        id="btn-modify-like-1"
+                        """.stripIndent().trim())));
+    }
 
     @Test
     @DisplayName("수정 폼 처리")
@@ -211,29 +211,29 @@ public class LikeablePersonControllerTests {
                         data-test="toInstaMember_attractiveTypeDisplayName=성격"
                         """.stripIndent().trim())));
     }
-//
-//    @Test
-//    @DisplayName("호감취소")
-//    @WithUserDetails("user3")
-//    void t008() throws Exception {
-//        // WHEN
-//        ResultActions resultActions = mvc
-//                .perform(
-//                        post("/usr/likeablePerson/cancel/1")
-//                                .with(csrf())
-//                )
-//                .andDo(print());
-//
-//        // THEN
-//        resultActions
-//                .andExpect(handler().handlerType(LikeablePersonController.class))
-//                .andExpect(handler().methodName("cancel"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrlPattern("/usr/likeablePerson/list**"))
-//        ;
-//
-//        assertThat(likeablePersonService.findById(1L).isPresent()).isEqualTo(false);
-//    }
+
+    @Test
+    @DisplayName("호감취소")
+    @WithUserDetails("user3")
+    void t008() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/usr/likeablePerson/cancel/1")
+                                .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("cancel"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/usr/likeablePerson/list**"))
+        ;
+
+        assertThat(likeablePersonService.findById(1L).isPresent()).isEqualTo(false);
+    }
 
     @Test
     @DisplayName("호감취소(없는거 취소, 취소가 안되어야 함)")
@@ -398,7 +398,7 @@ public class LikeablePersonControllerTests {
     void t016() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/likeablePerson/modify/1")
+                .perform(post("/usr/likeablePerson/modify/3")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "insta_user119")
                         .param("attractiveTypeCode", "3")
@@ -410,6 +410,8 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("modify"))
                 .andExpect(status().is4xxClientError());
+
+        assertThat(likeablePersonService.findById(3L).get().getAttractiveTypeCode()).isEqualTo(2);
     }
 
     @Test
@@ -418,7 +420,7 @@ public class LikeablePersonControllerTests {
     void t017() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/likeablePerson/cancel/1")
+                .perform(post("/usr/likeablePerson/cancel/3")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -428,5 +430,7 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("cancel"))
                 .andExpect(status().is4xxClientError());
+
+        assertThat(likeablePersonService.findById(3L).isPresent()).isTrue();
     }
 }
