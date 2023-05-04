@@ -59,26 +59,7 @@ public class LikeablePerson extends BaseEntity {
     }
 
     public String getModifyUnlockDateRemainStrHuman() {
-        //return Ut.time.diffFormat1Human(LocalDateTime.now(), modifyUnlockDate);
-
-        // 수정가능한 시간
-        LocalDateTime likeablePersonModifyReleasedDateTime = modifyUnlockDate;
-
-        // 현재시간
-        LocalDateTime now = LocalDateTime.now();
-        // 수정가능한 시간 - 현재시간
-        Duration duration = Duration.between(now, likeablePersonModifyReleasedDateTime);
-
-        long hours = duration.toHours();
-        long minutes = (long) Math.ceil((duration.getSeconds() / 60.0) % 60.0);
-
-        if (minutes == 60) {
-            hours += 1;
-            minutes = 0;
-        }
-
-        return "%s시간 %s분".formatted(hours, minutes);
-
+        return Ut.time.diffFormat1Human(LocalDateTime.now(), modifyUnlockDate);
     }
 
 
