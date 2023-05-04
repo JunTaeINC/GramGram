@@ -87,7 +87,7 @@ public class LikeablePersonService {
 
         long fromInstaMemberId = likeablePerson.getFromInstaMember().getId();
 
-        if (!likeablePerson.getModifyUnlockDate().isBefore(LocalDateTime.now())) {
+        if (!likeablePerson.isModifyUnlocked()) {
             return RsData.of("F-3", "해당 게시물을 삭제하기엔 이릅니다. 이후에 다시 시도해주세요.");
         }
 
@@ -185,7 +185,7 @@ public class LikeablePersonService {
             return RsData.of("F-1", "먼저 본인의 인스타그램 아이디를 입력해주세요.");
         }
 
-        if (!likeablePerson.getModifyUnlockDate().isBefore(LocalDateTime.now())) {
+        if (!likeablePerson.isModifyUnlocked()) {
             return RsData.of("F-3", "해당 게시물을 수정하기엔 이릅니다. 이후 다시 시도해주세요.");
         }
 

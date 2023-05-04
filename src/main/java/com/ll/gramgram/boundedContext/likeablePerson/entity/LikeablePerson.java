@@ -58,13 +58,14 @@ public class LikeablePerson extends BaseEntity {
         return modifyUnlockDate.isBefore(LocalDateTime.now());
     }
 
-    public static String getModifyUnlockDateRemainStrHuman() {
-        // 수정가능한 시간 현재시간 + 3시간
-        LocalDateTime likeablePersonModifyReleasedDateTime = AppConfig.genLikeablePersonModifyUnlockDate();
+    public String getModifyUnlockDateRemainStrHuman() {
+        //return Ut.time.diffFormat1Human(LocalDateTime.now(), modifyUnlockDate);
+
+        // 수정가능한 시간
+        LocalDateTime likeablePersonModifyReleasedDateTime = modifyUnlockDate;
 
         // 현재시간
         LocalDateTime now = LocalDateTime.now();
-        //LocalDateTime likeablePersonModifyReleasedDateTime = now.plusSeconds(10);
         // 수정가능한 시간 - 현재시간
         Duration duration = Duration.between(now, likeablePersonModifyReleasedDateTime);
 
@@ -77,6 +78,7 @@ public class LikeablePerson extends BaseEntity {
         }
 
         return "%s시간 %s분".formatted(hours, minutes);
+
     }
 
 
