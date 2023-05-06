@@ -31,6 +31,10 @@ public class Notification extends BaseEntity {
     private int oldAttractiveTypeCode;
     private int newAttractiveTypeCode;
 
+    public void markAsRead() {
+        readDate = LocalDateTime.now();
+    }
+
     public boolean isRead() {
         return readDate != null;
     }

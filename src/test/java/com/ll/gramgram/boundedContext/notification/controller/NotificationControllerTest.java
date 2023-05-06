@@ -20,6 +20,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -39,7 +40,8 @@ class NotificationControllerTest {
 
         List<Notification> notifications = notificationService.findByToInstaMember_username("insta_user4");
 
-        long readCount = notifications.stream()
+        long readCount = notifications
+                .stream()
                 .filter(notification -> !notification.isRead()) // 읽지 않은 것
                 .count();
 
@@ -49,11 +51,10 @@ class NotificationControllerTest {
                 .perform(get("/usr/notification/list"))
                 .andDo(print());
 
-        readCount = notifications.stream()
+        readCount = notifications
+                .stream()
                 .filter(notification -> !notification.isRead())
                 .count();
-
-
 
         assertThat(readCount).isEqualTo(0);
     }
