@@ -30,4 +30,8 @@ public class Notification extends BaseEntity {
     private String newGender;
     private int oldAttractiveTypeCode;
     private int newAttractiveTypeCode;
+
+    public boolean isRead() {
+        return readDate != null;
+    }
 }

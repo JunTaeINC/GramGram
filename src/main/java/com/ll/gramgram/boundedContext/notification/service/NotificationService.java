@@ -42,4 +42,8 @@ public class NotificationService {
 
         return RsData.of("S-1", "알림 메세지가 생성되었습니다.", notification);
     }
+
+    public List<Notification> findByToInstaMember_username(String username) {
+        return notificationRepository.findByToInstaMember_username(username);
+    }
 }
