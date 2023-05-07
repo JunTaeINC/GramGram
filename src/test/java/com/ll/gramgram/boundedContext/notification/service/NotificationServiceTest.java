@@ -1,6 +1,5 @@
 package com.ll.gramgram.boundedContext.notification.service;
 
-import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
@@ -41,7 +40,7 @@ class NotificationServiceTest {
 
         List<Notification> notifications = notificationService.findByToInstaMember(member5.getInstaMember());
 
-        Notification lastNotification = notifications.get(notifications.size() - 1);
+        Notification lastNotification = notifications.get(0);
 
         assertThat(lastNotification.getTypeCode()).isEqualTo("LIKE");
         assertThat(lastNotification.getFromInstaMember().getUsername()).isEqualTo("insta_user3");
@@ -58,7 +57,7 @@ class NotificationServiceTest {
 
         List<Notification> notifications = notificationService.findByToInstaMember(member4.getInstaMember());
 
-        Notification lastNotification = notifications.get(notifications.size() - 1);
+        Notification lastNotification = notifications.get(0);
 
         assertThat(lastNotification.getTypeCode()).isEqualTo("MODIFY_ATTRACTIVE_TYPE");
         assertThat(lastNotification.getOldAttractiveTypeCode()).isEqualTo(1);
