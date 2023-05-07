@@ -7,11 +7,13 @@ import com.ll.gramgram.boundedContext.notification.entity.Notification;
 import com.ll.gramgram.boundedContext.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NotificationService {
     private final NotificationRepository notificationRepository;
 
@@ -19,10 +21,12 @@ public class NotificationService {
         return notificationRepository.findByToInstaMember(toInstaMember);
     }
 
+    @Transactional
     public RsData<Notification> makeLike(LikeablePerson likeablePerson) {
         return make(likeablePerson, "LIKE", 0, likeablePerson.getFromInstaMember().getGender());
     }
 
+    @Transactional
     public RsData<Notification> makeModifyAttractiveType(LikeablePerson likeablePerson, int oldAttractiveTypeCode) {
         return make(likeablePerson, "MODIFY_ATTRACTIVE_TYPE", oldAttractiveTypeCode, likeablePerson.getFromInstaMember().getGender());
     }
@@ -47,6 +51,7 @@ public class NotificationService {
         return notificationRepository.findByToInstaMember_username(username);
     }
 
+    @Transactional
     public RsData markAsRead(List<Notification> notifications) {
 
         notifications
@@ -55,5 +60,9 @@ public class NotificationService {
                 .forEach(notification -> notification.markAsRead());
 
         return RsData.of("S-1", "읽음 처리가 완료되었습니다.");
+    }
+
+    public boolean countUnreadNotificationsByToInstaMember(InstaMember instaMember) {
+        return notificationRepository.countByToInstaMemberAndReadDateIsNull(instaMember) > 0;
     }
 }
