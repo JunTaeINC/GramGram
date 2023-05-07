@@ -15,11 +15,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -57,5 +62,39 @@ class NotificationControllerTest {
                 .count();
 
         assertThat(readCount).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("알림이 있을시 인디케이트 표시")
+    @WithUserDetails("user4")
+    void test002() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/home/about"))
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string(containsString("""
+                        data-test="hasUnreadNotifications"
+                        """.stripIndent().trim())));
+    }
+
+    @Test
+    @DisplayName("알림이 없을시 인디케이트 표시 X")
+    @WithUserDetails("user4")
+    void test003() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/notification/list"))
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string(not(containsString("""
+                        data-test="hasUnreadNotifications"
+                        """.stripIndent().trim()))));
     }
 }
