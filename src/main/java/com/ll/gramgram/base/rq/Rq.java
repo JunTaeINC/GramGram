@@ -8,14 +8,17 @@ import com.ll.gramgram.standard.util.Ut;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.servlet.LocaleResolver;
 
 import java.util.Date;
+import java.util.Locale;
 
 @Component
 @RequestScope
@@ -27,10 +30,15 @@ public class Rq {
     private final HttpSession session;
     private final User user;
     private Member member = null; // 레이지 로딩, 처음부터 넣지 않고, 요청이 들어올 때 넣는다.
+    private final MessageSource messageSource;
+    private final LocaleResolver localeResolver;
+    private Locale locale;
 
-    public Rq(MemberService memberService, NotificationService notificationService, HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
+    public Rq(MemberService memberService, NotificationService notificationService, MessageSource messageSource, LocaleResolver localeResolver, HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
         this.memberService = memberService;
         this.notificationService = notificationService;
+        this.messageSource = messageSource;
+        this.localeResolver = localeResolver;
         this.req = req;
         this.resp = resp;
         this.session = session;
@@ -142,5 +150,15 @@ public class Rq {
         if (!actor.hasConnectedInstaMember()) return false;
 
         return notificationService.countUnreadNotificationsByToInstaMember(actor.getInstaMember());
+    }
+
+    public String getCText(String code, String... args) {
+        return messageSource.getMessage(code, args, getLocale());
+    }
+
+    private Locale getLocale() {
+        if (locale == null) locale = localeResolver.resolveLocale(req);
+
+        return locale;
     }
 }
