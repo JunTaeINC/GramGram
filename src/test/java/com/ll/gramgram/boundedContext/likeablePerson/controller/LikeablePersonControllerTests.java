@@ -1,12 +1,14 @@
 package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
 import com.ll.gramgram.base.appConfig.AppConfig;
-import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -17,10 +19,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -443,9 +445,18 @@ public class LikeablePersonControllerTests {
     @DisplayName("user2 의 전체 항목의 수 = 2")
     @WithUserDetails("user2")
     void t018() throws Exception {
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender="))
+                .andReturn();
+        String html = mvcResult.getResponse().getContentAsString();
+        Document doc = Jsoup.parse(html);
+
+        Elements elements = doc.select("[data-test=gender]");
+
+        assertThat(elements.size()).isEqualTo(2);
+
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/likeablePerson/toList")
+                .perform(get("/usr/likeablePerson/toList?gender=")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -455,15 +466,21 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("showToList"))
                 .andExpect(status().is2xxSuccessful());
-
-        assertThat(likeablePersonRepository.countByToInstaMember_username("insta_user2"))
-                .isEqualTo(2);
     }
 
     @Test
     @DisplayName("user2 의 남성 항목의 수 = 1")
     @WithUserDetails("user2")
     void t019() throws Exception {
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=M"))
+                .andReturn();
+        String html = mvcResult.getResponse().getContentAsString();
+        Document doc = Jsoup.parse(html);
+
+        Elements elements = doc.select("[data-test=gender]");
+
+        assertThat(elements.size()).isEqualTo(1);
+
         // WHEN
         ResultActions resultActions = mvc
                 .perform(get("/usr/likeablePerson/toList?gender=M")
@@ -476,15 +493,21 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("showToList"))
                 .andExpect(status().is2xxSuccessful());
-
-        assertThat(likeablePersonRepository.countByToInstaMember_username("insta_user2"))
-                .isEqualTo(1);
     }
 
     @Test
     @DisplayName("user2 의 여성 항목의 수 = 1")
     @WithUserDetails("user2")
     void t020() throws Exception {
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W"))
+                .andReturn();
+        String html = mvcResult.getResponse().getContentAsString();
+        Document doc = Jsoup.parse(html);
+
+        Elements elements = doc.select("[data-test=gender]");
+
+        assertThat(elements.size()).isEqualTo(1);
+
         // WHEN
         ResultActions resultActions = mvc
                 .perform(get("/usr/likeablePerson/toList?gender=W")
@@ -497,8 +520,5 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("showToList"))
                 .andExpect(status().is2xxSuccessful());
-
-        assertThat(likeablePersonRepository.countByToInstaMember_username("insta_user2"))
-                .isEqualTo(1);
     }
 }

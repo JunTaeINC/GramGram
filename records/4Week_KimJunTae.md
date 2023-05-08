@@ -35,7 +35,8 @@
   - `gender`의 값을 가져오기 위해서 `@RequestParam String gender`를 사용하였다. `default` 값이 `required = true` 이기 때문에 파라미터 값이
   누락이 되면 `400 Bad Request`가 발생한다. 그래서 `@RequestParam(required = false) String gender`로 바꿨더니 이젠 `500 NullPointerException`
   에러가 발생했다. `gender`의 값이 `null`이 되서 생긴듯 하다. `if (gender == null)`를 추가해줘서 성공적으로 기능은 구현이 되었다. 하지만 리펙토링이 필요해보인다.
-
+  - test 코드 작성시 `LikeablePersonRepository`를 활용해서 리스트의 사이즈를 구했지만 이것은 옳바른 방법이 아니였다. `gender=W` 였을때의 리스트의 사이즈를
+  구하기 위해서는 `MvcResult`를 통해 응답받은 `html`을 `Jsoup 라이브러리`를 통해 파해서 코드를 구현할수 있었다.
 ### **[🤔회고]**
 
 ### **[💫리펙토링]**
