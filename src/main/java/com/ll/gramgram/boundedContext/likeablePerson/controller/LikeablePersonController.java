@@ -100,7 +100,7 @@ public class LikeablePersonController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/toList")
-    public String showToList(Model model, @RequestParam(required = false) String gender) {
+    public String showToList(Model model, @RequestParam(required = false) String gender, @RequestParam(required = false) String attractiveTypeCode) {
         InstaMember instaMember = rq.getMember().getInstaMember();
 
         if (instaMember == null) return "usr/likeablePerson/toList";
@@ -108,7 +108,7 @@ public class LikeablePersonController {
 
         List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
 
-        if (gender == null) {
+        if (gender == null || attractiveTypeCode == null) {
             model.addAttribute("likeablePeople", likeablePeople);
             return "usr/likeablePerson/toList";
         }
@@ -121,6 +121,19 @@ public class LikeablePersonController {
                     .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals("W"))
                     .collect(Collectors.toList());
         }
+
+        switch (attractiveTypeCode) {
+            case "1" -> likeablePeople = likeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 1)
+                    .collect(Collectors.toList());
+            case "2" -> likeablePeople = likeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 2)
+                    .collect(Collectors.toList());
+            case "3" -> likeablePeople = likeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 3)
+                    .collect(Collectors.toList());
+        }
+
         model.addAttribute("likeablePeople", likeablePeople);
 
         return "usr/likeablePerson/toList";

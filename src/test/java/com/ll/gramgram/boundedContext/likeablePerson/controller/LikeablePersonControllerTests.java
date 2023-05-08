@@ -456,7 +456,7 @@ public class LikeablePersonControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/likeablePerson/toList?gender=")
+                .perform(get("/usr/likeablePerson/toList?gender=**")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -472,7 +472,7 @@ public class LikeablePersonControllerTests {
     @DisplayName("user2 호감표시자의 남성 항목의 수 = 1")
     @WithUserDetails("user2")
     void t019() throws Exception {
-        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=M"))
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=M&attractiveTypeCode=&sortCode=1"))
                 .andReturn();
         String html = mvcResult.getResponse().getContentAsString();
         Document doc = Jsoup.parse(html);
@@ -483,7 +483,7 @@ public class LikeablePersonControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/likeablePerson/toList?gender=M")
+                .perform(get("/usr/likeablePerson/toList?gender=M**")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -499,7 +499,7 @@ public class LikeablePersonControllerTests {
     @DisplayName("user2 호감표시자의 여성 항목의 수 = 1")
     @WithUserDetails("user2")
     void t020() throws Exception {
-        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W"))
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W&attractiveTypeCode=&sortCode=1"))
                 .andReturn();
         String html = mvcResult.getResponse().getContentAsString();
         Document doc = Jsoup.parse(html);
@@ -510,7 +510,7 @@ public class LikeablePersonControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/likeablePerson/toList?gender=W")
+                .perform(get("/usr/likeablePerson/toList?gender=W**")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -526,7 +526,7 @@ public class LikeablePersonControllerTests {
     @DisplayName("user2 호감표시자의 호감사유(전체)인 항목의 수 = 2")
     @WithUserDetails("user2")
     void t021() throws Exception {
-        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?attractiveTypeCode="))
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=&attractiveTypeCode="))
                 .andReturn();
         String html = mvcResult.getResponse().getContentAsString();
         Document doc = Jsoup.parse(html);
@@ -537,7 +537,7 @@ public class LikeablePersonControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/likeablePerson/toList?attractiveTypeCode=")
+                .perform(get("/usr/likeablePerson/toList?gender=&attractiveTypeCode=")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -553,7 +553,7 @@ public class LikeablePersonControllerTests {
     @DisplayName("user2 호감표시자의 호감사유(외모 : 1)인 항목의 수 = 1")
     @WithUserDetails("user2")
     void t022() throws Exception {
-        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?attractiveTypeCode=1"))
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=&attractiveTypeCode=1"))
                 .andReturn();
         String html = mvcResult.getResponse().getContentAsString();
         Document doc = Jsoup.parse(html);
@@ -564,7 +564,7 @@ public class LikeablePersonControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/likeablePerson/toList?attractiveTypeCode=1")
+                .perform(get("/usr/likeablePerson/toList?gender=&attractiveTypeCode=1")
                         .with(csrf())
                 )
                 .andDo(print());
