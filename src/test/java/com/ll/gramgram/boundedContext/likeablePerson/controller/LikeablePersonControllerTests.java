@@ -442,7 +442,7 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("user2 의 전체 항목의 수 = 2")
+    @DisplayName("user2 호감표시자의 전체 항목의 수 = 2")
     @WithUserDetails("user2")
     void t018() throws Exception {
         MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender="))
@@ -469,7 +469,7 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("user2 의 남성 항목의 수 = 1")
+    @DisplayName("user2 호감표시자의 남성 항목의 수 = 1")
     @WithUserDetails("user2")
     void t019() throws Exception {
         MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=M"))
@@ -496,7 +496,7 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("user2 의 여성 항목의 수 = 1")
+    @DisplayName("user2 호감표시자의 여성 항목의 수 = 1")
     @WithUserDetails("user2")
     void t020() throws Exception {
         MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W"))
@@ -511,6 +511,114 @@ public class LikeablePersonControllerTests {
         // WHEN
         ResultActions resultActions = mvc
                 .perform(get("/usr/likeablePerson/toList?gender=W")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    @DisplayName("user2 호감표시자의 호감사유(전체)인 항목의 수 = 2")
+    @WithUserDetails("user2")
+    void t021() throws Exception {
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?attractiveTypeCode="))
+                .andReturn();
+        String html = mvcResult.getResponse().getContentAsString();
+        Document doc = Jsoup.parse(html);
+
+        Elements elements = doc.select("[data-test=gender]");
+
+        assertThat(elements.size()).isEqualTo(2);
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList?attractiveTypeCode=")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    @DisplayName("user2 호감표시자의 호감사유(외모 : 1)인 항목의 수 = 1")
+    @WithUserDetails("user2")
+    void t022() throws Exception {
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?attractiveTypeCode=1"))
+                .andReturn();
+        String html = mvcResult.getResponse().getContentAsString();
+        Document doc = Jsoup.parse(html);
+
+        Elements elements = doc.select("[data-test=gender]");
+
+        assertThat(elements.size()).isEqualTo(1);
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList?attractiveTypeCode=1")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    @DisplayName("user2 호감표시자의 성별이 여성이고 호감사유(외모 : 1)인 항목의 수 = 1")
+    @WithUserDetails("user2")
+    void t023() throws Exception {
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W&attractiveTypeCode=1"))
+                .andReturn();
+        String html = mvcResult.getResponse().getContentAsString();
+        Document doc = Jsoup.parse(html);
+
+        Elements elements = doc.select("[data-test=gender]");
+
+        assertThat(elements.size()).isEqualTo(1);
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList?gender=W&attractiveTypeCode=1")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    @DisplayName("user2 호감표시자의 성별이 여성이고 호감사유(능력 : 3)인 항목의 수 = 0")
+    @WithUserDetails("user2")
+    void t024() throws Exception {
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W&attractiveTypeCode=3"))
+                .andReturn();
+        String html = mvcResult.getResponse().getContentAsString();
+        Document doc = Jsoup.parse(html);
+
+        Elements elements = doc.select("[data-test=gender]");
+
+        assertThat(elements.size()).isEqualTo(0);
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList?gender=W&attractiveTypeCode=3")
                         .with(csrf())
                 )
                 .andDo(print());
