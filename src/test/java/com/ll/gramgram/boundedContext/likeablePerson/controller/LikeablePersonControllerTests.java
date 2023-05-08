@@ -1,7 +1,9 @@
 package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
 import com.ll.gramgram.base.appConfig.AppConfig;
+import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
+import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -41,6 +44,8 @@ public class LikeablePersonControllerTests {
     private MemberService memberService;
     @Autowired
     private LikeablePersonService likeablePersonService;
+    @Autowired
+    private LikeablePersonRepository likeablePersonRepository;
 
     @Test
     @DisplayName("등록 폼(인스타 인증을 안해서 폼 대신 메세지)")
@@ -432,5 +437,68 @@ public class LikeablePersonControllerTests {
                 .andExpect(status().is4xxClientError());
 
         assertThat(likeablePersonService.findById(3L).isPresent()).isTrue();
+    }
+
+    @Test
+    @DisplayName("user2 의 전체 항목의 수 = 2")
+    @WithUserDetails("user2")
+    void t018() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful());
+
+        assertThat(likeablePersonRepository.countByToInstaMember_username("insta_user2"))
+                .isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("user2 의 남성 항목의 수 = 1")
+    @WithUserDetails("user2")
+    void t019() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList?gender=M")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful());
+
+        assertThat(likeablePersonRepository.countByToInstaMember_username("insta_user2"))
+                .isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("user2 의 여성 항목의 수 = 1")
+    @WithUserDetails("user2")
+    void t020() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList?gender=W")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful());
+
+        assertThat(likeablePersonRepository.countByToInstaMember_username("insta_user2"))
+                .isEqualTo(1);
     }
 }
