@@ -14,16 +14,16 @@
 ### 🔥 추가 미션
 - [X] `toList.html` 호감사유 필터링 기능 구현
   - [X] 테스터 코드 작성
-- [ ] `toList.html` 정렬 기능 구현
+- [X] `toList.html` 정렬 기능 구현
   - [X] 테스터 코드 작성
-  - [ ] 날짜순
-  - [ ] 최신순(기본)
-  - [ ] 인기 많은 순
-  - [ ] 인기 적은 순
-  - [ ] 성별순
+  - [X] 날짜순
+  - [X] 최신순(기본)
+  - [X] 인기 많은 순
+  - [X] 인기 적은 순
+  - [X] 성별순
     - 1순위 : 여성 -> 남성 순
     - 2순위 : 최신순
-  - [ ] 호감사유순
+  - [X] 호감사유순
     - 1순위 : 외모 -> 성격 -> 능력 순
     - 2순위 : 최신순
 - [ ] 젠킨스를 통해서 리포지터리의 main 브랜치에 커밋 이벤트가 발생하면 자동으로 배포
@@ -47,6 +47,10 @@
   `<script>`는 화면에서 보여지는 값이므로 변화하지 않았다. 그래서 타임리프의 `th:each="likeablePerson, loop: ${likeablePeople}"` 를 활용해
   `<div th:attr="count=${loop.count}">` 를 통해서 값을 넣는데 성공했다. 하지만 이런방법을 활용하지는 못했다. 다른 방법인 `MvcResult`를 사용했다.
   `result.getModelAndView().getModel().get("likeablePeople");` 이렇게 해서 `List<LikeablePerson>`을 가져올수 있게 되었다.
+  - 최신순으로 정렬이 기본이고, 나중에 2순위가 최신순이기 때문에 `switch`문 밖에서 최신순으로 정렬을 하였다. 성별순 으로 정렬을 할때 
+  `.sorted(Comparator.comparing(e -> e.getFromInstaMember().getGender().equals("W")).reversed())` 이렇게 구현을 했더니 에러가 발생했다. 내용은
+  `람다식에서 e는 어떤 객체든 될 수 있기 때문에 이 객체에 getFromInstaMember() 메서드가 존재하는지 컴파일러가 알 수 없습니다. 그래서 컴파일러는 e를 Object로 추론했을 가능성이 있습니다.`
+  그래서 `e -> ((LikeablePerson)e)` 로 변경해주었다.
 ### **[🤔회고]**
 
 ### **[💫리펙토링]**
