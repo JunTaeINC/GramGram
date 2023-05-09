@@ -443,7 +443,7 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("user2 호감표시자의 전체 항목의 수 = 2")
+    @DisplayName("user2 호감표시자의 전체 항목의 수 = 3")
     @WithUserDetails("user2")
     void t018() throws Exception {
         MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender="))
@@ -453,7 +453,7 @@ public class LikeablePersonControllerTests {
 
         Elements elements = doc.select("[data-test=gender]");
 
-        assertThat(elements.size()).isEqualTo(2);
+        assertThat(elements.size()).isEqualTo(3);
 
         // WHEN
         ResultActions resultActions = mvc
@@ -497,7 +497,7 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("user2 호감표시자의 여성 항목의 수 = 1")
+    @DisplayName("user2 호감표시자의 여성 항목의 수 = 2")
     @WithUserDetails("user2")
     void t020() throws Exception {
         MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W&attractiveTypeCode=&sortCode=1"))
@@ -507,7 +507,7 @@ public class LikeablePersonControllerTests {
 
         Elements elements = doc.select("[data-test=gender]");
 
-        assertThat(elements.size()).isEqualTo(1);
+        assertThat(elements.size()).isEqualTo(2);
 
         // WHEN
         ResultActions resultActions = mvc
@@ -524,7 +524,7 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("user2 호감표시자의 호감사유(전체)인 항목의 수 = 2")
+    @DisplayName("user2 호감표시자의 호감사유(전체)인 항목의 수 = 3")
     @WithUserDetails("user2")
     void t021() throws Exception {
         MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=&attractiveTypeCode="))
@@ -534,7 +534,7 @@ public class LikeablePersonControllerTests {
 
         Elements elements = doc.select("[data-test=gender]");
 
-        assertThat(elements.size()).isEqualTo(2);
+        assertThat(elements.size()).isEqualTo(3);
 
         // WHEN
         ResultActions resultActions = mvc
@@ -551,17 +551,17 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("user2 호감표시자의 호감사유(외모 : 1)인 항목의 수 = 1")
+    @DisplayName("user2 호감표시자의 호감사유(외모 : 1)인 항목의 수 = 2")
     @WithUserDetails("user2")
     void t022() throws Exception {
-        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=&attractiveTypeCode=1"))
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=&attractiveTypeCode=1&sortCode=1"))
                 .andReturn();
         String html = mvcResult.getResponse().getContentAsString();
         Document doc = Jsoup.parse(html);
 
         Elements elements = doc.select("[data-test=gender]");
 
-        assertThat(elements.size()).isEqualTo(1);
+        assertThat(elements.size()).isEqualTo(2);
 
         // WHEN
         ResultActions resultActions = mvc
@@ -578,17 +578,17 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("user2 호감표시자의 성별이 여성이고 호감사유(외모 : 1)인 항목의 수 = 1")
+    @DisplayName("user2 호감표시자의 성별이 여성이고 호감사유(외모 : 1)인 항목의 수 = 2")
     @WithUserDetails("user2")
     void t023() throws Exception {
-        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W&attractiveTypeCode=1"))
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W&attractiveTypeCode=1&sortCode=1"))
                 .andReturn();
         String html = mvcResult.getResponse().getContentAsString();
         Document doc = Jsoup.parse(html);
 
         Elements elements = doc.select("[data-test=gender]");
 
-        assertThat(elements.size()).isEqualTo(1);
+        assertThat(elements.size()).isEqualTo(2);
 
         // WHEN
         ResultActions resultActions = mvc
@@ -608,7 +608,7 @@ public class LikeablePersonControllerTests {
     @DisplayName("user2 호감표시자의 성별이 여성이고 호감사유(능력 : 3)인 항목의 수 = 0")
     @WithUserDetails("user2")
     void t024() throws Exception {
-        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W&attractiveTypeCode=3"))
+        MvcResult mvcResult = mvc.perform(get("/usr/likeablePerson/toList?gender=W&attractiveTypeCode=3&sortCode=1"))
                 .andReturn();
         String html = mvcResult.getResponse().getContentAsString();
         Document doc = Jsoup.parse(html);
@@ -643,8 +643,12 @@ public class LikeablePersonControllerTests {
         // THEN
         List<LikeablePerson> modelLikeablePeople = (List<LikeablePerson>) result.getModelAndView().getModel().get("likeablePeople");
         LikeablePerson firstLikeablePerson = modelLikeablePeople.get(0);
+        LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
+        LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
 
-        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
+        assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
     }
 
     @Test
@@ -659,8 +663,12 @@ public class LikeablePersonControllerTests {
         // THEN
         List<LikeablePerson> modelLikeablePeople = (List<LikeablePerson>) result.getModelAndView().getModel().get("likeablePeople");
         LikeablePerson firstLikeablePerson = modelLikeablePeople.get(0);
+        LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
+        LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
 
-        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
+        assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
     }
 
     @Test
@@ -675,8 +683,12 @@ public class LikeablePersonControllerTests {
         // THEN
         List<LikeablePerson> modelLikeablePeople = (List<LikeablePerson>) result.getModelAndView().getModel().get("likeablePeople");
         LikeablePerson firstLikeablePerson = modelLikeablePeople.get(0);
+        LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
+        LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
 
         assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
     }
 
     @Test
@@ -691,8 +703,12 @@ public class LikeablePersonControllerTests {
         // THEN
         List<LikeablePerson> modelLikeablePeople = (List<LikeablePerson>) result.getModelAndView().getModel().get("likeablePeople");
         LikeablePerson firstLikeablePerson = modelLikeablePeople.get(0);
+        LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
+        LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
 
-        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
+        assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
     }
 
     @Test
@@ -710,8 +726,8 @@ public class LikeablePersonControllerTests {
         LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
         LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
 
-        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
-        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
         assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
     }
 
@@ -730,8 +746,8 @@ public class LikeablePersonControllerTests {
         LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
         LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
 
-        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
-        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
         assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
     }
 }

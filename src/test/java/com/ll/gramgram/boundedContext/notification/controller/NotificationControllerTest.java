@@ -49,7 +49,7 @@ class NotificationControllerTest {
                 .filter(notification -> !notification.isRead()) // 읽지 않은 것
                 .count();
 
-        assertThat(readCount).isEqualTo(1);
+        assertThat(readCount).isEqualTo(3);
 
         ResultActions resultActions = mvc
                 .perform(get("/usr/notification/list"))
