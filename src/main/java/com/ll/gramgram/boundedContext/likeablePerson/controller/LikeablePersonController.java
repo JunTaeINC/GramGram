@@ -107,7 +107,6 @@ public class LikeablePersonController {
 
         if (instaMember == null) return "usr/likeablePerson/toList";
 
-
         List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
 
         if (gender == null || attractiveTypeCode == null || sortCode == null) {
@@ -115,47 +114,8 @@ public class LikeablePersonController {
             return "usr/likeablePerson/toList";
         }
 
-        switch (gender) {
-            case "M" -> likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals("M"))
-                    .collect(Collectors.toList());
-            case "W" -> likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals("W"))
-                    .collect(Collectors.toList());
-        }
+        likeablePeople = likeablePersonService.sortByCode(likeablePeople, gender, attractiveTypeCode, sortCode);
 
-        switch (attractiveTypeCode) {
-            case "1" -> likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 1)
-                    .collect(Collectors.toList());
-            case "2" -> likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 2)
-                    .collect(Collectors.toList());
-            case "3" -> likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 3)
-                    .collect(Collectors.toList());
-        }
-        // 최신순 = 1(기본) / 날짜순 = 2 / 인기 많은순 = 3 / 인기 적은순 = 4 / 성별순 = 5 / 호감사유순 = 6
-        likeablePeople = likeablePeople.stream()
-                .sorted(Comparator.comparing(LikeablePerson::getCreateDate).reversed())
-                .collect(Collectors.toList());
-        switch (sortCode) {
-            case "2" -> likeablePeople = likeablePeople.stream()
-                    .sorted(Comparator.comparing(LikeablePerson::getCreateDate))
-                    .collect(Collectors.toList());
-            case "3" -> likeablePeople = likeablePeople.stream()
-                    .sorted((e1, e2) -> e2.getFromInstaMember().getToLikeablePeople().size() - e1.getFromInstaMember().getToLikeablePeople().size())
-                    .collect(Collectors.toList());
-            case "4" -> likeablePeople = likeablePeople.stream()
-                    .sorted(Comparator.comparingInt(e -> e.getFromInstaMember().getToLikeablePeople().size()))
-                    .collect(Collectors.toList());
-            case "5" -> likeablePeople = likeablePeople.stream()
-                    .sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getGender().equals("W")).reversed())
-                    .collect(Collectors.toList());
-            case "6" -> likeablePeople = likeablePeople.stream()
-                    .sorted(Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode))
-                    .collect(Collectors.toList());
-        }
         model.addAttribute("likeablePeople", likeablePeople);
 
         return "usr/likeablePerson/toList";

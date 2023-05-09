@@ -15,9 +15,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -209,6 +211,52 @@ public class LikeablePersonService {
 
     public Optional<LikeablePerson> findByFromInstaMember_usernameAndToInstaMember_username(String fromInstaMemberUsername, String toInstaMemberUsername) {
         return likeablePersonRepository.findByFromInstaMember_usernameAndToInstaMember_username(fromInstaMemberUsername, toInstaMemberUsername);
+    }
+
+    public List<LikeablePerson> sortByCode(List<LikeablePerson> likeablePeople, String gender, String attractiveTypeCode, String sortCode) {
+        switch (gender) {
+            case "M" -> likeablePeople = likeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals("M"))
+                    .collect(Collectors.toList());
+            case "W" -> likeablePeople = likeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals("W"))
+                    .collect(Collectors.toList());
+        }
+
+        switch (attractiveTypeCode) {
+            case "1" -> likeablePeople = likeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 1)
+                    .collect(Collectors.toList());
+            case "2" -> likeablePeople = likeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 2)
+                    .collect(Collectors.toList());
+            case "3" -> likeablePeople = likeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 3)
+                    .collect(Collectors.toList());
+        }
+
+        likeablePeople = likeablePeople.stream()
+                .sorted(Comparator.comparing(LikeablePerson::getCreateDate).reversed())
+                .collect(Collectors.toList());
+
+        switch (sortCode) {
+            case "2" -> likeablePeople = likeablePeople.stream()
+                    .sorted(Comparator.comparing(LikeablePerson::getCreateDate))
+                    .collect(Collectors.toList());
+            case "3" -> likeablePeople = likeablePeople.stream()
+                    .sorted((e1, e2) -> e2.getFromInstaMember().getToLikeablePeople().size() - e1.getFromInstaMember().getToLikeablePeople().size())
+                    .collect(Collectors.toList());
+            case "4" -> likeablePeople = likeablePeople.stream()
+                    .sorted(Comparator.comparingInt(e -> e.getFromInstaMember().getToLikeablePeople().size()))
+                    .collect(Collectors.toList());
+            case "5" -> likeablePeople = likeablePeople.stream()
+                    .sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getGender().equals("W")).reversed())
+                    .collect(Collectors.toList());
+            case "6" -> likeablePeople = likeablePeople.stream()
+                    .sorted(Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode))
+                    .collect(Collectors.toList());
+        }
+        return likeablePeople;
     }
 }
 
