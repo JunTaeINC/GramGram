@@ -95,48 +95,38 @@
                     </button>
                 </th:block>
 
-                <button class="btn btn-ghost btn-outline btn-info gap-1">
 
-                    <a href="/oauth2/authorization/kakao">
-                        <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
-                        <span class="normal-case" th:text="#{c.startWithKakao}"></span>
-                    </a>
-                </button>
+                <a href="/oauth2/authorization/kakao" class="btn btn-ghost btn-outline btn-info gap-1">
+                    <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
+                    <span class="normal-case" th:text="#{c.startWithKakao}"></span>
+                </a>
 
-                <button class="btn btn-ghost btn-outline btn-info gap-1">
-                    <a href="/oauth2/authorization/naver">
-                        <i class="fa-solid fa-n text-[color:#2DB400]"></i>
-                        <span class="normal-case" th:text="#{c.startWithNaver}"></span>
-                    </a>
-                </button>
+                <a href="/oauth2/authorization/naver" class="btn btn-ghost btn-outline btn-info gap-1">
+                    <i class="fa-solid fa-n text-[color:#2DB400]"></i>
+                    <span class="normal-case" th:text="#{c.startWithNaver}"></span>
+                </a>
 
-                <button class="btn btn-ghost btn-outline btn-info gap-1">
-                    <a href="/oauth2/authorization/google">
-                        <i class="fa-brands fa-google text-[color:#4285f4]"></i>
-                        <span class="normal-case" th:text="#{c.startWithGoogle}"></span>
-                    </a>
-                </button>
-                <button class="btn btn-ghost btn-outline btn-info gap-1">
-                    <a href="/oauth2/authorization/facebook">
-                        <i class="fa-brands fa-facebook text-[color:#3b5998]"></i>
-                        <span class="normal-case" th:text="#{c.startWithFacebook}"></span>
-                    </a>
-                </button>
+                <a href="/oauth2/authorization/google" class="btn btn-ghost btn-outline btn-info gap-1">
+                    <i class="fa-brands fa-google text-[color:#ff4000]"></i>
+                    <span class="normal-case" th:text="#{c.startWithGoogle}"></span>
+                </a>
 
-            </form>
-            <div class="flex flex-wrap justify-center gap-2">
-                <button class="btn btn-primary btn-sm">
-                    <a href="/usr/member/findId">
+                <a href="/oauth2/authorization/facebook" class="btn btn-ghost btn-outline btn-info gap-1">
+                    <i class="fa-brands fa-facebook text-[color:#3b5998]"></i>
+                    <span class="normal-case" th:text="#{c.startWithFacebook}"></span>
+                </a>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <a href="/usr/member/findId" class="btn btn-outline btn-sm">
                         <i class="fa-solid fa-magnifying-glass"></i> 아이디 찾기
                     </a>
-                </button>
-                <button class="btn btn-primary btn-sm">
-                    <a href="/usr/member/findPassword">
+
+                    <a href="/usr/member/findPassword" class="btn btn-outline btn-sm">
                         <i class="fa-solid fa-key"></i> 비밀번호 찾기
                     </a>
-                </button>
-            </div>
+                </div>
+            </form>
         </div>
+
     </div>
 
 </main>
