@@ -38,6 +38,7 @@
 - `toList.html` 정렬 기능 구현
   - 테스트 코드를 작성하는 중에 어떻게 첫번째 게시물을 가져올까를 고민을 하다가 위의 방법처럼 게시물에서 번호를 메기는 방법을 떠올렸다. 그렇게해서 GPT를 활용해서 구현을 해보았지만 `<script>`는 화면에서 보여지는 값이므로 변화하지 않았다. 그래서 타임리프의 `th:each="likeablePerson, loop: ${likeablePeople}"` 를 활용해 `<div th:attr="count=${loop.count}">` 를 통해서 값을 넣는데 성공했다. 하지만 이런방법을 활용하지는 못했다. 다른 방법인 `MvcResult`를 사용했다. `result.getModelAndView().getModel().get("likeablePeople");` 이렇게 해서 `List<LikeablePerson>`을 가져올수 있게 되었다.
   - 최신순으로 정렬이 기본이고, 나중에 2순위가 최신순이기 때문에 `switch`문 밖에서 최신순으로 정렬을 하였다. 성별순 으로 정렬을 할때 `.sorted(Comparator.comparing(e -> e.getFromInstaMember().getGender().equals("W")).reversed())` 이렇게 구현을 했더니 에러가 발생했다. 내용은 `람다식에서 e는 어떤 객체든 될 수 있기 때문에 이 객체에 getFromInstaMember() 메서드가 존재하는지 컴파일러가 알 수 없습니다. 그래서 컴파일러는 e를 Object로 추론했을 가능성이 있습니다.` 그래서 `e -> ((LikeablePerson)e)` 로 변경해주었다.
-### **[🤔회고]**
 
 ### **[💫리펙토링]**
+- `String -> int 변경 / required = false -> defaultValue`
+  - `gender=&attractiveTypeCode=&sortCode=3` 부분에서 매개변수가 `String`타입인 줄 알았지만 `int`타입으로도 가능했다. 매개변수마다 `!= null` 을 해줘야 됐었는데 `defaultValue`를 넣어줌으로써 해결되었다.
