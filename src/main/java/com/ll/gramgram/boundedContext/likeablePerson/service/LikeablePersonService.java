@@ -214,19 +214,19 @@ public class LikeablePersonService {
         return likeablePersonRepository.findByFromInstaMember_usernameAndToInstaMember_username(fromInstaMemberUsername, toInstaMemberUsername);
     }
 
-    public List<LikeablePerson> getFilteredAndSortedLikeablePeople(InstaMember instaMember, String gender, Integer attractiveTypeCode, Integer sortCode) {
+    public List<LikeablePerson> getFilteredAndSortedLikeablePeople(InstaMember instaMember, String gender, int attractiveTypeCode, int sortCode) {
         Stream<LikeablePerson> likeablePeopleStream = instaMember.getToLikeablePeople().stream();
-
+        // filterByGender
         if (!gender.isEmpty()) {
             likeablePeopleStream = likeablePeopleStream
                     .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals(gender));
         }
-
+        // filterByAttractiveTypeCode
         if (attractiveTypeCode != 0) {
             likeablePeopleStream = likeablePeopleStream
                     .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == attractiveTypeCode);
         }
-
+        // sortBySortCode
         likeablePeopleStream = switch (sortCode) {
             // case 1 -> instaMember 엔티티에 @OrderBy("id desc") 자동 정렬이 되어있다.
             case 2 -> likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getId));
