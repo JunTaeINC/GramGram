@@ -42,3 +42,5 @@
 ### **[💫리펙토링]**
 - `String -> int 변경 / required = false -> defaultValue`
   - `gender=&attractiveTypeCode=&sortCode=3` 부분에서 매개변수가 `String`타입인 줄 알았지만 `int`타입으로도 가능했다. 매개변수마다 `!= null` 을 해줘야 됐었는데 `defaultValue`를 넣어줌으로써 해결되었다.
+- `성별 필터링 / 호감사유별 필터링 간결`
+  - 생각을 조금만 더 했으면 주어지는 매개변수에 따라 `likeablePeople`을 가져오면 되는 것이였다.

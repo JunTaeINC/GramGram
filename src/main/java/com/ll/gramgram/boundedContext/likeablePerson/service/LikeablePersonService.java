@@ -213,46 +213,35 @@ public class LikeablePersonService {
         return likeablePersonRepository.findByFromInstaMember_usernameAndToInstaMember_username(fromInstaMemberUsername, toInstaMemberUsername);
     }
 
-    public List<LikeablePerson> sortByCode(List<LikeablePerson> likeablePeople, String gender, String attractiveTypeCode, String sortCode) {
-        switch (gender) {
-            case "M" -> likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals("M"))
-                    .collect(Collectors.toList());
-            case "W" -> likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals("W"))
+    public List<LikeablePerson> getFilteredAndSortedLikeablePeople(InstaMember instaMember, String gender, Integer attractiveTypeCode, Integer sortCode) {
+        List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+
+        if (!gender.isEmpty()) {
+            likeablePeople = likeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals(gender))
                     .collect(Collectors.toList());
         }
 
-        switch (attractiveTypeCode) {
-            case "1" -> likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 1)
-                    .collect(Collectors.toList());
-            case "2" -> likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 2)
-                    .collect(Collectors.toList());
-            case "3" -> likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == 3)
+        if (attractiveTypeCode != 0) {
+            likeablePeople = likeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == attractiveTypeCode)
                     .collect(Collectors.toList());
         }
-
-        likeablePeople = likeablePeople.stream()
-                .sorted(Comparator.comparing(LikeablePerson::getCreateDate).reversed())
-                .collect(Collectors.toList());
 
         switch (sortCode) {
-            case "2" -> likeablePeople = likeablePeople.stream()
+            case 2 -> likeablePeople = likeablePeople.stream()
                     .sorted(Comparator.comparing(LikeablePerson::getCreateDate))
                     .collect(Collectors.toList());
-            case "3" -> likeablePeople = likeablePeople.stream()
+            case 3 -> likeablePeople = likeablePeople.stream()
                     .sorted((e1, e2) -> e2.getFromInstaMember().getToLikeablePeople().size() - e1.getFromInstaMember().getToLikeablePeople().size())
                     .collect(Collectors.toList());
-            case "4" -> likeablePeople = likeablePeople.stream()
+            case 4 -> likeablePeople = likeablePeople.stream()
                     .sorted(Comparator.comparingInt(e -> e.getFromInstaMember().getToLikeablePeople().size()))
                     .collect(Collectors.toList());
-            case "5" -> likeablePeople = likeablePeople.stream()
+            case 5 -> likeablePeople = likeablePeople.stream()
                     .sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getGender().equals("W")).reversed())
                     .collect(Collectors.toList());
-            case "6" -> likeablePeople = likeablePeople.stream()
+            case 6 -> likeablePeople = likeablePeople.stream()
                     .sorted(Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode))
                     .collect(Collectors.toList());
         }
