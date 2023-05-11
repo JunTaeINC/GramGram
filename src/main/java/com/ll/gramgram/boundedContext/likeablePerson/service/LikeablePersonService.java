@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -214,38 +215,29 @@ public class LikeablePersonService {
     }
 
     public List<LikeablePerson> getFilteredAndSortedLikeablePeople(InstaMember instaMember, String gender, Integer attractiveTypeCode, Integer sortCode) {
-        List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+        Stream<LikeablePerson> likeablePeopleStream = instaMember.getToLikeablePeople().stream();
 
         if (!gender.isEmpty()) {
-            likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals(gender))
-                    .collect(Collectors.toList());
+            likeablePeopleStream = likeablePeopleStream
+                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals(gender));
         }
 
         if (attractiveTypeCode != 0) {
-            likeablePeople = likeablePeople.stream()
-                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == attractiveTypeCode)
-                    .collect(Collectors.toList());
+            likeablePeopleStream = likeablePeopleStream
+                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == attractiveTypeCode);
         }
 
-        switch (sortCode) {
-            case 2 -> likeablePeople = likeablePeople.stream()
-                    .sorted(Comparator.comparing(LikeablePerson::getCreateDate))
-                    .collect(Collectors.toList());
-            case 3 -> likeablePeople = likeablePeople.stream()
-                    .sorted((e1, e2) -> e2.getFromInstaMember().getToLikeablePeople().size() - e1.getFromInstaMember().getToLikeablePeople().size())
-                    .collect(Collectors.toList());
-            case 4 -> likeablePeople = likeablePeople.stream()
-                    .sorted(Comparator.comparingInt(e -> e.getFromInstaMember().getToLikeablePeople().size()))
-                    .collect(Collectors.toList());
-            case 5 -> likeablePeople = likeablePeople.stream()
-                    .sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getGender().equals("W")).reversed())
-                    .collect(Collectors.toList());
-            case 6 -> likeablePeople = likeablePeople.stream()
-                    .sorted(Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode))
-                    .collect(Collectors.toList());
-        }
-        return likeablePeople;
+        likeablePeopleStream = switch (sortCode) {
+            // case 1 -> instaMember 엔티티에 @OrderBy("id desc") 자동 정렬이 되어있다.
+            case 2 -> likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getId));
+            case 3 -> likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getLikes()).reversed());
+            case 4 -> likeablePeopleStream.sorted(Comparator.comparing(e -> e.getFromInstaMember().getLikes()));
+            case 5 -> likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getGender().equals("W")).reversed());
+            case 6 -> likeablePeopleStream.sorted(Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode));
+            default -> likeablePeopleStream;
+        };
+
+        return likeablePeopleStream.toList();
     }
 }
 

@@ -41,6 +41,13 @@
 
 ### **[💫리펙토링]**
 - `String -> int 변경 / required = false -> defaultValue`
-  - `gender=&attractiveTypeCode=&sortCode=3` 부분에서 매개변수가 `String`타입인 줄 알았지만 `int`타입으로도 가능했다. 매개변수마다 `!= null` 을 해줘야 됐었는데 `defaultValue`를 넣어줌으로써 해결되었다.
+  - `gender=&attractiveTypeCode=&sortCode=3` 부분에서 매개변수가 `String`타입인 줄 알았지만 `int`타입으로도 가능했다.
+  - 매개변수마다 `!= null` 을 해줘야 됐었는데 `defaultValue`를 넣어줌으로써 해결되었다.
 - `성별 필터링 / 호감사유별 필터링 간결`
   - 생각을 조금만 더 했으면 주어지는 매개변수에 따라 `likeablePeople`을 가져오면 되는 것이였다.
+- `정렬 코드 수정`
+  - `case : 1` - `instaMember`에 `@OrderBy("id desc")` 붙어있으므로 자동 정렬이 된다.
+  - `case : 2` - `getCreateDate -> getId` `Id`키에 `primaryKey`가 있기때문에 `index`가 걸려있어서 빠르게 찾을수있다.
+  - `case : 3,4` - 리스트의 `size()`를 가지고 비교를 했었는데 `instaMember`의  `getLikes()`를 까먹고 있었다.
+  - `stream()`,`.collect(Collectors.toList());` 중복 제거를 위해서 `List<LikeablePerson>` -> `Stream<LikeablePerson>`
+  - `likeablePeopleStream = switch (sortCode)` 를 통해서 `likeablePeopleStream = likeablePeopleStream` 중복 제거
