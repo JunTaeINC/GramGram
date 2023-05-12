@@ -104,7 +104,7 @@ public class LikeablePersonController {
         InstaMember instaMember = rq.getMember().getInstaMember();
 
         if (instaMember != null) {
-            List<LikeablePerson> likeablePeople = likeablePersonService.getFilteredAndSortedLikeablePeople(instaMember, gender, attractiveTypeCode, sortCode);
+            List<LikeablePerson> likeablePeople = likeablePersonService.getFilteredAndSortedToInstaMember(instaMember, gender, attractiveTypeCode, sortCode);
             model.addAttribute("likeablePeople", likeablePeople);
         }
 

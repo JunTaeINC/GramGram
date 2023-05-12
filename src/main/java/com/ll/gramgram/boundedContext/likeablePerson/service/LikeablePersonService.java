@@ -19,7 +19,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -214,7 +213,7 @@ public class LikeablePersonService {
         return likeablePersonRepository.findByFromInstaMember_usernameAndToInstaMember_username(fromInstaMemberUsername, toInstaMemberUsername);
     }
 
-    public List<LikeablePerson> getFilteredAndSortedLikeablePeople(InstaMember instaMember, String gender, int attractiveTypeCode, int sortCode) {
+    public List<LikeablePerson> getFilteredAndSortedToInstaMember(InstaMember instaMember, String gender, int attractiveTypeCode, int sortCode) {
         Stream<LikeablePerson> likeablePeopleStream = instaMember.getToLikeablePeople().stream();
         // filterByGender
         if (!gender.isEmpty()) {
@@ -230,9 +229,11 @@ public class LikeablePersonService {
         likeablePeopleStream = switch (sortCode) {
             // case 1 -> instaMember 엔티티에 @OrderBy("id desc") 자동 정렬이 되어있다.
             case 2 -> likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getId));
-            case 3 -> likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getLikes()).reversed());
+            case 3 ->
+                    likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getLikes()).reversed());
             case 4 -> likeablePeopleStream.sorted(Comparator.comparing(e -> e.getFromInstaMember().getLikes()));
-            case 5 -> likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getGender().equals("W")).reversed());
+            case 5 ->
+                    likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getGender().equals("W")).reversed());
             case 6 -> likeablePeopleStream.sorted(Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode));
             default -> likeablePeopleStream;
         };
