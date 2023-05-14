@@ -2,6 +2,7 @@ package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
 import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
+import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
@@ -15,14 +16,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,6 +45,8 @@ public class LikeablePersonControllerTests {
     private MemberService memberService;
     @Autowired
     private LikeablePersonService likeablePersonService;
+    @Autowired
+    private LikeablePersonRepository likeablePersonRepository;
 
     @Test
     @DisplayName("등록 폼(인스타 인증을 안해서 폼 대신 메세지)")
@@ -432,5 +438,254 @@ public class LikeablePersonControllerTests {
                 .andExpect(status().is4xxClientError());
 
         assertThat(likeablePersonService.findById(3L).isPresent()).isTrue();
+    }
+
+    @Test
+    @DisplayName("user2 호감표시자의 전체 항목의 수 = 3")
+    @WithUserDetails("user2")
+    void t018() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attribute("likeablePeople", hasSize(3)));
+    }
+
+    @Test
+    @DisplayName("user2 호감표시자의 남성 항목의 수 = 1")
+    @WithUserDetails("user2")
+    void t019() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList")
+                        .param("gender", "M")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attribute("likeablePeople", hasSize(1)));
+    }
+
+    @Test
+    @DisplayName("user2 호감표시자의 여성 항목의 수 = 2")
+    @WithUserDetails("user2")
+    void t020() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList")
+                        .param("gender", "W")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attribute("likeablePeople", hasSize(2)));
+    }
+
+    @Test
+    @DisplayName("user2 호감표시자의 호감사유(외모 : 1)인 항목의 수 = 2")
+    @WithUserDetails("user2")
+    void t021() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList")
+                        .param("attractiveTypeCode", "1")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attribute("likeablePeople", hasSize(2)));
+    }
+
+    @Test
+    @DisplayName("user2 호감표시자의 성별이 여성이고 호감사유(외모 : 1)인 항목의 수 = 2")
+    @WithUserDetails("user2")
+    void t022() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList")
+                        .param("gender", "W")
+                        .param("attractiveTypeCode", "1")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attribute("likeablePeople", hasSize(2)));
+        ;
+    }
+
+    @Test
+    @DisplayName("user2 호감표시자의 성별이 여성이고 호감사유(능력 : 3)인 항목의 수 = 0")
+    @WithUserDetails("user2")
+    void t023() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/likeablePerson/toList")
+                        .param("gender", "W")
+                        .param("attractiveTypeCode", "3")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("showToList"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attribute("likeablePeople", hasSize(0)));
+        ;
+    }
+
+    @Test
+    @DisplayName("user2 최신순으로 정렬")
+    @WithUserDetails("user2")
+    void t024() throws Exception {
+        // WHEN
+        MvcResult result = mvc.perform(get("/usr/likeablePerson/toList")
+                        .param("sortCode", "1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // THEN
+        List<LikeablePerson> modelLikeablePeople = (List<LikeablePerson>) result.getModelAndView().getModel().get("likeablePeople");
+        LikeablePerson firstLikeablePerson = modelLikeablePeople.get(0);
+        LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
+        LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
+
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
+        assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
+    }
+
+    @Test
+    @DisplayName("user2 오래된순으로 정렬")
+    @WithUserDetails("user2")
+    void t025() throws Exception {
+        // WHEN
+        MvcResult result = mvc.perform(get("/usr/likeablePerson/toList")
+                        .param("sortCode", "2"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // THEN
+        List<LikeablePerson> modelLikeablePeople = (List<LikeablePerson>) result.getModelAndView().getModel().get("likeablePeople");
+        LikeablePerson firstLikeablePerson = modelLikeablePeople.get(0);
+        LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
+        LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
+
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
+        assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+    }
+
+    @Test
+    @DisplayName("user2 인기 많은 순 정렬")
+    @WithUserDetails("user2")
+    void t026() throws Exception {
+        // WHEN
+        MvcResult result = mvc.perform(get("/usr/likeablePerson/toList")
+                        .param("sortCode", "3"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // THEN
+        List<LikeablePerson> modelLikeablePeople = (List<LikeablePerson>) result.getModelAndView().getModel().get("likeablePeople");
+        LikeablePerson firstLikeablePerson = modelLikeablePeople.get(0);
+        LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
+        LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
+
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
+    }
+
+    @Test
+    @DisplayName("user2 인기 적은 순 정렬 / 2순위 최신순")
+    @WithUserDetails("user2")
+    void t027() throws Exception {
+        // WHEN
+        MvcResult result = mvc.perform(get("/usr/likeablePerson/toList")
+                        .param("sortCode", "4"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // THEN
+        List<LikeablePerson> modelLikeablePeople = (List<LikeablePerson>) result.getModelAndView().getModel().get("likeablePeople");
+        LikeablePerson firstLikeablePerson = modelLikeablePeople.get(0);
+        LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
+        LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
+
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
+        assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
+    }
+
+    @Test
+    @DisplayName("user2 성별 순 / 2순위 최신순")
+    @WithUserDetails("user2")
+    void t028() throws Exception {
+        // WHEN
+        MvcResult result = mvc.perform(get("/usr/likeablePerson/toList")
+                        .param("sortCode", "5"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // THEN
+        List<LikeablePerson> modelLikeablePeople = (List<LikeablePerson>) result.getModelAndView().getModel().get("likeablePeople");
+        LikeablePerson firstLikeablePerson = modelLikeablePeople.get(0);
+        LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
+        LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
+
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
+        assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
+    }
+
+    @Test
+    @DisplayName("user2 호감사유순 / 2순위 최신순")
+    @WithUserDetails("user2")
+    void t029() throws Exception {
+        // WHEN
+        MvcResult result = mvc.perform(get("/usr/likeablePerson/toList")
+                        .param("sortCode", "6"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // THEN
+        List<LikeablePerson> modelLikeablePeople = (List<LikeablePerson>) result.getModelAndView().getModel().get("likeablePeople");
+        LikeablePerson firstLikeablePerson = modelLikeablePeople.get(0);
+        LikeablePerson twiceLikeablePerson = modelLikeablePeople.get(1);
+        LikeablePerson thridLikeablePerson = modelLikeablePeople.get(2);
+
+        assertThat(firstLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user5");
+        assertThat(twiceLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user3");
+        assertThat(thridLikeablePerson.getFromInstaMemberUsername()).isEqualTo("insta_user4");
     }
 }

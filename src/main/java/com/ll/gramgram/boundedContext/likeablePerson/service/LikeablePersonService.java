@@ -15,9 +15,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -209,6 +211,34 @@ public class LikeablePersonService {
 
     public Optional<LikeablePerson> findByFromInstaMember_usernameAndToInstaMember_username(String fromInstaMemberUsername, String toInstaMemberUsername) {
         return likeablePersonRepository.findByFromInstaMember_usernameAndToInstaMember_username(fromInstaMemberUsername, toInstaMemberUsername);
+    }
+
+    public List<LikeablePerson> getFilteredAndSortedToInstaMember(InstaMember instaMember, String gender, int attractiveTypeCode, int sortCode) {
+        Stream<LikeablePerson> likeablePeopleStream = instaMember.getToLikeablePeople().stream();
+        // filterByGender
+        if (!gender.isEmpty()) {
+            likeablePeopleStream = likeablePeopleStream
+                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals(gender));
+        }
+        // filterByAttractiveTypeCode
+        if (attractiveTypeCode != 0) {
+            likeablePeopleStream = likeablePeopleStream
+                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == attractiveTypeCode);
+        }
+        // sortBySortCode
+        likeablePeopleStream = switch (sortCode) {
+            // case 1 -> instaMember 엔티티에 @OrderBy("id desc") 자동 정렬이 되어있다.
+            case 2 -> likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getId));
+            case 3 ->
+                    likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getLikes()).reversed());
+            case 4 -> likeablePeopleStream.sorted(Comparator.comparing(e -> e.getFromInstaMember().getLikes()));
+            case 5 ->
+                    likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson e) -> e.getFromInstaMember().getGender().equals("W")).reversed());
+            case 6 -> likeablePeopleStream.sorted(Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode));
+            default -> likeablePeopleStream;
+        };
+
+        return likeablePeopleStream.toList();
     }
 }
 
